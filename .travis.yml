@@ -3,7 +3,7 @@ language: node_js
 node_js: node
 
 branches:
-  only: [ "travis-ci-setup" ]
+  only: [ "master", "develop" ]
 
 before_script:
   - npm uninstall typescript --no-save
