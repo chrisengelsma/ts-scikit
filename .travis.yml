@@ -2,7 +2,8 @@ language: nodejs
 
 before_script:
   - npm i -g typescript
-  - tsc
+  - npm run setup
+  - npm run build
 
 script:
   - npm run test-only
