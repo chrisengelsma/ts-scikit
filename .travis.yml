@@ -1,9 +1,9 @@
 language: nodejs
 
 before_script:
-  - npm i -g typescript@3.7.5
-  - npm run setup
-  - npm run build
+  - npm i -g typescript typings
+  - typings install
+  - tsc
 
 script:
   - npm run test-only
