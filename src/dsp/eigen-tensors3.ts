@@ -1,6 +1,6 @@
 import { Tensors3 } from './tensors3';
 import { UnitSphereSampling } from '../utils';
-import EigenSolver from './eigen-solver';
+import { EigenSolver } from './eigen-solver';
 
 /**
  * An array of eigen-decomposition of tensors for 3D image processing.

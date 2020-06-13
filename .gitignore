@@ -4,3 +4,6 @@ build/
 .idea/
 node_modules/
 package-lock.json
+docs/
+dist/
+.nyc_output/

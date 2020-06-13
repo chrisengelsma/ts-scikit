@@ -1,0 +1,10 @@
+tsconfig.json
+.travis.yml
+.nojekyll
+.gitignore
+src/
+docs/
+dist/test/
+.npmignore
+
+ts-scikit-*.tgz
