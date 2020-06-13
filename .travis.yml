@@ -1,3 +1,5 @@
+sudo: required
+
 language: nodejs
 
 before_script:
