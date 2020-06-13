@@ -7,10 +7,10 @@
   "author": "Chris Engelsma <chris.engelsma@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/chrisengelsma/ts-scikit.git"
   },
   "bugs": {
-    "url": "",
+    "url": ""
   },
   "keywords": [
 
