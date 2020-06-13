@@ -1,12 +1,13 @@
-sudo: required
-
 language: node_js
+
+node_js: node
 
 branches:
   only: [ "travis-ci-setup" ]
 
 before_script:
-  - npm i -g typescript
+  - npm uninstall typescript --no-save
+  - npm uninstall tslint --no-save
   - npm run setup
   - npm run build
 
