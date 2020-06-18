@@ -1,7 +1,209 @@
 export class MathsUtils {
+
   private static NSMALL_SORT: number = 7;
 
   private static NLARGE_SORT: number = 40;
+
+  /**
+   * Takes the cosine of a number by using the sine and an additional angle.
+   * @param sin   the sine of an angle.
+   * @param angle the angle.
+   * @returns the resulting cosine.
+   */
+  static CosFromSin(sin: number, angle: number): number {
+    // sin(x)^2 + cos(x)^2 = 1
+    const cos = Math.sqrt(1.0 - sin * sin);
+    const a = angle + ( Math.PI / 2 );
+    let b = a - Math.floor(a / ( 2 * Math.PI )) * ( 2 * Math.PI );
+    if (b < 0) {
+      b += ( 2 * Math.PI );
+    }
+    return ( b >= Math.PI ) ? -cos : cos;
+  }
+
+  /**
+   * Converts degrees to radians.
+   * @param degrees the angle in degrees
+   * @returns the angle in radians.
+   */
+  static ToRadians(degrees: number): number {
+    return ( degrees * Math.PI / 180.0 );
+  }
+
+  /**
+   * Converts radians to degrees.
+   * @param radians the angle in radians.
+   * @returns the angle in degrees.
+   */
+  static ToDegrees(radians: number): number {
+    return ( radians * 180.0 / Math.PI );
+  }
+
+  /**
+   * Determines whether the specified array is increasing.
+   * The array is increasing if its elements a[i] increase with array index i,
+   * with no equal values.
+   * @param a the array.
+   * @returns true, if increasing (or a.length &lt; 2); false, otherwise.
+   */
+  static IsIncreasing(a: number[]): boolean {
+    const n = a.length;
+    if (n > 1) {
+      for (let i = 1; i < n; ++i) {
+        if (a[i - 1] > a[i]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Determines whether the specified array is decreasing.
+   * The array is decreasing if its elements a[i] decrease with array index i,
+   * with no equal values.
+   * @param a the array.
+   * @returns true, if decreasing (or a.length &lt; 2); false, otherwise.
+   */
+  static IsDecreasing(a: number[]): boolean {
+    const n = a.length;
+    if (n > 1) {
+      for (let i = 1; i < n; ++i) {
+        if (a[i - 1] < a[i]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Determines whether the specified array is monotonic.
+   * The array is monotonic if its elements[i] either increase or
+   * decrease (but not both) with array index i, with no equal values.
+   * @param a the array.
+   * @returns true, if monotonic (or a.length &lt; 2); false, otherwise.
+   */
+  static IsMonotonic(a: number[]): boolean {
+    return this.IsIncreasing(a) || this.IsDecreasing(a);
+  }
+
+  /**
+   * Determines if two values are almost equal given a provided tolerance.
+   * @param v1 a value.
+   * @param v2 a value.
+   * @param tiny the tolerance.
+   * @returns true, if almost equal; false, otherwise.
+   */
+  static AlmostEqual(v1: number, v2: number, tiny: number): boolean {
+    const diff = v2 - v1;
+    return ( diff < 0.0 ) ? -diff < tiny : diff < tiny;
+  }
+
+  /**
+   * Copies m-contents of one array into another.
+   * <p>
+   * The provided length m will be bound within the range 0 <= m <= arr.length.
+   * @param arr the array to copy.
+   * @param m   the number of elements to copy.
+   * @returns the copied array.
+   */
+  static Copy(arr: number[], m: number = -1): number[] {
+    m = Math.min(Math.max(m, 0), arr.length);
+    return arr.slice(m);
+  }
+
+  /**
+   * Performs a quick partial sort.
+   * @param k
+   * @param arr
+   */
+  static QuickPartialSort(k: number, arr: number[]): void {
+    const n = arr.length;
+    let p = 0;
+    let q = n - 1;
+    const m = ( n > this.NSMALL_SORT ) ? new Array<number>(2) : null;
+    while (q - p >= this.NSMALL_SORT) {
+      m[0] = p;
+      m[1] = q;
+      this.quickPartition(arr, m);
+      if (k < m[0]) {
+        q = m[0] - 1;
+      } else if (k > m[1]) {
+        p = m[1] + 1;
+      } else {
+        return;
+      }
+    }
+    this.insertionSort(arr, p, q);
+  }
+
+  /**
+   * Performs a binary search in a monotonic array of values.
+   * <p>
+   * Values are assumed to increase or decrease monotonically, with no equal
+   * values.
+   * <p>
+   * Warning: this method does not ensure that the specified array is
+   * monotonic; that check would be more costly than this search.
+   * @param a the array of values, assumed to be monotonic.
+   * @param x the value for which to search.
+   * @param i the index at which to begin the search. If negative, this
+   *          method interprets this index as if returned from a
+   *          previous call.
+   * @returns the index at which the specified value is found, or, if not
+   *          found, -(i + 1), where i equals the index at which the
+   *          specified value would be located if it was inserted into
+   *          the monotonic array.
+   */
+  static BinarySearch(a: number[], x: number, i?: number): number {
+    if (!i) { i = a.length; }
+    const n = a.length;
+    let nm1 = n - 1;
+    let low = 0;
+    let high = nm1;
+    const increasing = n < 2 || a[0] < a[1];
+    if (i < n) {
+      high = ( 0 <= i ) ? i : -( i + 1 );
+      low = high - 1;
+      let step = 1;
+      if (increasing) {
+        for (; 0 < low && x < a[low]; low -= step, step += step) { high = low; }
+        for (; high < nm1 && a[high] < x; high += step, step += step) { low = high; }
+      } else {
+        for (; 0 < low && x > a[low]; low -= step, step += step) { high = low; }
+        for (; high < nm1 && a[high] > x; high += step, step += step) { low = high; }
+      }
+      if (low < 0) { low = 0; }
+      if (high > nm1) { high = nm1; }
+    }
+    if (increasing) {
+      while (low <= high) {
+        let mid = ( low + high ) >> 1;
+        let amid = a[mid];
+        if (amid < x) {
+          low = mid + 1;
+        } else if (amid > x) {
+          high = mid - 1;
+        } else {
+          return mid;
+        }
+      }
+    } else {
+      while (low <= high) {
+        let mid = ( low + high ) >> 1;
+        let amid = a[mid];
+        if (amid > x) {
+          low = mid + 1;
+        } else if (amid < x) {
+          high = mid - 1;
+        } else {
+          return mid;
+        }
+      }
+    }
+    return -( low + 1 );
+  }
 
   private static med3(a: number[], i: number, j: number, k: number): number {
     return a[i] < a[j] ?
@@ -67,139 +269,5 @@ export class MathsUtils {
     this.swap(x, b, t - s, s);
     m[0] = p + ( b - a ); // p --- m[0]-1 | m[0] --- m[1] | m[1]+1 --- q
     m[1] = q - ( d - c ); //   x<y               x=y               x>y
-  }
-
-  /**
-   * Takes the cosine of a number by using the sine and an additional angle.
-   * @param sin   the sine of an angle.
-   * @param angle the angle.
-   * @returns the resulting cosine.
-   */
-  static cosFromSin(sin: number, angle: number): number {
-    // sin(x)^2 + cos(x)^2 = 1
-    const cos = Math.sqrt(1.0 - sin * sin);
-    const a = angle + ( Math.PI / 2 );
-    let b = a - Math.floor(a / ( 2 * Math.PI )) * ( 2 * Math.PI );
-    if (b < 0) {
-      b += ( 2 * Math.PI );
-    }
-    return ( b >= Math.PI ) ? -cos : cos;
-  }
-
-  /**
-   * Converts degrees to radians.
-   * @param degrees the angle in degrees
-   * @returns the angle in radians.
-   */
-  static toRadians(degrees: number): number {
-    return ( degrees * Math.PI / 180.0 );
-  }
-
-  /**
-   * Converts radians to degrees.
-   * @param radians the angle in radians.
-   * @returns the angle in degrees.
-   */
-  static toDegrees(radians: number): number {
-    return ( radians * 180.0 / Math.PI );
-  }
-
-  /**
-   * Determines whether the specified array is increasing.
-   * The array is increasing if its elements a[i] increase with array index i,
-   * with no equal values.
-   * @param a the array.
-   * @returns true, if increasing (or a.length &lt; 2); false, otherwise.
-   */
-  static isIncreasing(a: number[]): boolean {
-    const n = a.length;
-    if (n > 1) {
-      for (let i = 1; i < n; ++i) {
-        if (a[i - 1] > a[i]) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Determines whether the specified array is decreasing.
-   * The array is decreasing if its elements a[i] decrease with array index i,
-   * with no equal values.
-   * @param a the array.
-   * @returns true, if decreasing (or a.length &lt; 2); false, otherwise.
-   */
-  static isDecreasing(a: number[]): boolean {
-    const n = a.length;
-    if (n > 1) {
-      for (let i = 1; i < n; ++i) {
-        if (a[i - 1] < a[i]) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Determines whether the specified array is monotonic.
-   * The array is monotonic if its elements[i] either increase or
-   * decrease (but not both) with array index i, with no equal values.
-   * @param a the array.
-   * @returns true, if monotonic (or a.length &lt; 2); false, otherwise.
-   */
-  static isMonotonic(a: number[]): boolean {
-    return this.isIncreasing(a) || this.isDecreasing(a);
-  }
-
-  /**
-   * Determines if two values are almost equal given a provided tolerance.
-   * @param v1 a value.
-   * @param v2 a value.
-   * @param tiny the tolerance.
-   * @returns true, if almost equal; false, otherwise.
-   */
-  static almostEqual(v1: number, v2: number, tiny: number): boolean {
-    const diff = v2 - v1;
-    return ( diff < 0.0 ) ? -diff < tiny : diff < tiny;
-  }
-
-  /**
-   * Copies m-contents of one array into another.
-   * <p>
-   * The provided length m will be bound within the range 0 <= m <= arr.length.
-   * @param arr the array to copy.
-   * @param m   the number of elements to copy.
-   * @returns the copied array.
-   */
-  static copy(arr: number[], m: number = -1): number[] {
-    m = Math.min(Math.max(m, 0), arr.length);
-    return arr.slice(m);
-  }
-
-  /**
-   * Performs a quick partial sort.
-   * @param k
-   * @param arr
-   */
-  static quickPartialSort(k: number, arr: number[]): void {
-    const n = arr.length;
-    let p = 0;
-    let q = n - 1;
-    const m = ( n > this.NSMALL_SORT ) ? new Array<number>(2) : null;
-    while (q - p >= this.NSMALL_SORT) {
-      m[0] = p;
-      m[1] = q;
-      this.quickPartition(arr, m);
-      if (k < m[0]) {
-        q = m[0] - 1;
-      } else if (k > m[1]) {
-        p = m[1] + 1;
-      } else {
-        return;
-      }
-    }
-    this.insertionSort(arr, p, q);
   }
 }

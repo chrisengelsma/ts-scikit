@@ -29,7 +29,7 @@
     "doc": "typedoc --out ./docs --mode file --excludePrivate --excludeProtected --tsconfig tsconfig.json ./src",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js -v",
     "postdoc": "shx cp .nojekyll docs/.nojekyll",
-    "coverage": "nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text npm run test"
+    "coverage": "nyc npm run test"
   },
   "dependencies": {},
   "devDependencies": {
@@ -55,5 +55,22 @@
   "directories": {
     "lib": "lib",
     "test": "tests"
+  },
+  "nyc": {
+    "extensions": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "**/*.spec.ts",
+      "**/index.ts"
+    ],
+    "reporter": [
+      "html",
+      "lcov",
+      "text"
+    ],
+    "all": false
   }
 }

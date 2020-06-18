@@ -22,9 +22,9 @@ export class Quaternion extends Tuple4 {
     const sy = Math.sin(angleY * 0.5);
     const sz = Math.sin(angleZ * 0.5);
 
-    const cx = MathsUtils.cosFromSin(sx, angleX * 0.5);
-    const cy = MathsUtils.cosFromSin(sy, angleY * 0.5);
-    const cz = MathsUtils.cosFromSin(sz, angleZ * 0.5);
+    const cx = MathsUtils.CosFromSin(sx, angleX * 0.5);
+    const cy = MathsUtils.CosFromSin(sy, angleY * 0.5);
+    const cz = MathsUtils.CosFromSin(sz, angleZ * 0.5);
 
     const cycz = cy * cz;
     const sysz = sy * sz;

@@ -1,7 +1,13 @@
 import { FftReal } from './fft-real';
+import { FftComplex } from './fft-complex';
+import { Sampling } from './sampling';
 
 /**
  * An easy-to-use fast Fourier transform.
+ * <p>
+ * This class is less flexible than {@link FftComplex} and {@link FftReal}.
+ * For example, the user has less control over the sampling of frequency.
+ * However, for many applications this class may be simpler to use.
  * <p>
  * For example, the following program shows how to use this class to
  * filter a real-valued sequence in the frequency domain.
@@ -65,16 +71,40 @@ import { FftReal } from './fft-real';
  */
 export class Fft {
 
-  /**
-   * Returns a new fast Fourier transform for the specified array of real values.
-   * <p>
-   * Spatial dimensions are determined from the dimension of the specified
-   * array. Spatial sampling intervals are 1.0, and the first sample coordinates
-   * are 0.0.
-   * @param {number[]|number[][]|number[][][]} f an array of real values.
-   * @param {boolean} complex true, for complex values; false, for real values.
-   * @constructor
-   */
+  private _fft1r: FftReal;
+
+  private _fft1c: FftComplex;
+  private _fft2: FftComplex;
+  private _fft3: FftComplex;
+
+  private _sx1: Sampling;
+  private _sx2: Sampling;
+  private _sx3: Sampling;
+
+  private _sk1: Sampling;
+  private _sk2: Sampling;
+  private _sk3: Sampling;
+
+  private _sign1: number;
+  private _sign2: number;
+  private _sign3: number;
+
+  private _nfft1: number;
+  private _nfft2: number;
+  private _nfft3: number;
+
+  private _padding1: number;
+  private _padding2: number;
+  private _padding3: number;
+
+  private _center1: boolean;
+  private _center2: boolean;
+  private _center3: boolean;
+
+  private complex: boolean;
+
+  private overwrite: boolean;
+
   static FromData(f: number[] | number[][] | number[][][], complex: boolean = false) {
     if (f[0] instanceof Array) {
       if (f[0][0] instanceof Array) {
@@ -84,6 +114,60 @@ export class Fft {
     }
     return new Fft(f.length, complex);
   }
+
+  /**
+   * Constructs an FFT for the specified 1D array of real values.
+   * <p>
+   * Spatial dimensions are determined from the dimensions of the
+   * specified array. Spatial sampling intervals are 1.0, and first
+   * sample coordinates are 0.0.
+   * @param f an array with dimensions like those to be transformed.
+   * @param complex true, for complex values; false, for real values.
+   */
+  constructor(f: number[], complex?: boolean);
+
+  /**
+   * Constructs an FFT for the specified 2D array of real values.
+   * <p>
+   * Spatial dimensions are determined from the dimensions of the
+   * specified array. Spatial sampling intervals are 1.0, and first
+   * sample coordinates are 0.0.
+   * @param f an array with dimensions like those to be transformed.
+   * @param complex true, for complex values; false, for real values.
+   */
+  constructor(f: number[][], complex?: boolean);
+
+  /**
+   * Constructs an FFT for the specified 3D array of real values.
+   * <p>
+   * Spatial dimensions are determined from the dimensions of the
+   * specified array. Spatial sampling intervals are 1.0, and first
+   * sample coordinates are 0.0.
+   * @param f an array with dimensions like those to be transformed.
+   * @param complex true, for complex values; false, for real values.
+   */
+  constructor(f: number[][][], complex?: boolean);
+
+  /**
+   * Constructs an FFT with specified space sampling.
+   * @param sx1 space sampling for the 1st dimension.
+   */
+  constructor(sx1: Sampling);
+
+  /**
+   * Constructs an FFT with specified space sampling.
+   * @param sx1 space sampling for the 1st dimension.
+   * @param sx2 space sampling for the 2nd dimension.
+   */
+  constructor(sx1: Sampling, sx2: Sampling);
+
+  /**
+   * Constructs an FFT with specified space sampling.
+   * @param sx1 space sampling for the 1st dimension.
+   * @param sx2 space sampling for the 2nd dimension.
+   * @param sx3 space sampling for the 3rd dimension.
+   */
+  constructor(sx1: Sampling, sx2: Sampling, sx3: Sampling);
 
   /**
    * Constructs a 1D FFT with specified number of space samples.
@@ -114,9 +198,56 @@ export class Fft {
    * @param {boolean} complex true, for complex values; false, for real values.
    */
   constructor(n1: number, n2: number, n3: number, complex?: boolean);
-  constructor(n1: number, n2?: number | boolean, n3?: number | boolean, complex?: boolean) {
+
+  constructor(n1: Sampling | number | number[] | number[][] | number[][][],
+              n2?: Sampling | number | number[] | boolean,
+              n3?: Sampling | number | number[] | boolean,
+              complex?: boolean) {
+    if (n1 instanceof Sampling && n2 instanceof Sampling && n3 instanceof Sampling) {
+      this._init(n1, n2, n3);
+    } else if (n1 instanceof Sampling && n2 instanceof Sampling) {
+      this._init(n1, n2);
+    } else if (n1 instanceof Sampling) {
+      this._init(n1);
+      if (typeof n1 === 'number' && typeof n2 === 'number' && typeof n3 === 'number') {
+        this._init(
+          new Sampling(n1),
+          new Sampling(n2),
+          new Sampling(n3)
+        );
+      } else if (typeof n1 === 'number' && typeof n2 === 'number') {
+        this._init(
+          new Sampling(n1),
+          new Sampling(n2)
+        );
+      } else if (typeof n1 === 'number') {
+        this._init(
+          new Sampling(n1)
+        );
+      } else if (n1[0] instanceof Array) {
+        if (n1[0][0] instanceof Array) {
+          this._init(
+            new Sampling(n1[0][0].length / 2),
+            new Sampling(n1[0].length),
+            new Sampling(n1.length)
+          );
+        }
+      }
+    }
   }
 
-  private _fftReal: FftReal;
+  private _init(sx1: Sampling, sx2?: Sampling, sx3?: Sampling): void {
+    this._sx1 = sx1;
+    this._sx2 = sx2;
+    this._sx3 = sx3;
+
+    this._sign1 = -1;
+    this._sign2 = -1;
+    this._sign3 = -1;
+
+    this._updateSampling1();
+    this._updateSampling2();
+    this._updateSampling3();
+  }
 
 }

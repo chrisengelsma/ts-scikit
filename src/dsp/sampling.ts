@@ -74,7 +74,7 @@ export class Sampling {
   indexOf(x: number): number {
     let i = -1;
     const j = Math.floor(Math.round(( x - this._f ) / this._d));
-    if (0 <= j && j < this.count && MathsUtils.almostEqual(x, this._f + j * this._d, this._td)) {
+    if (0 <= j && j < this.count && MathsUtils.AlmostEqual(x, this._f + j * this._d, this._td)) {
       i = j;
     }
     return i;
