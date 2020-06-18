@@ -3,8 +3,8 @@
   "version": "0.1.1",
   "description": "A scientific toolkit written in Typescript",
   "author": "Chris Engelsma <chris.engelsma@gmail.com>",
-  "main": "./index.js",
-  "types": "./lib/index.d.ts",
+  "main": "index.js",
+  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/chrisengelsma/ts-scikit.git"
@@ -22,13 +22,13 @@
   "scripts": {
     "setup": "npm install",
     "build": "tsc -p .",
-    "build-watch": "tsc -w -p .",
+    "build:watch": "tsc -w -p .",
     "lint": "tslint -p tsconfig.json",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
     "toc": "./node_modules/.bin/doctoc README.md --github --maxlevel 3",
-    "typedoc": "typedoc --out ./docs --mode modules --tsconfig tsconfig.json ./src",
+    "doc": "typedoc --out ./docs --mode file --excludePrivate --excludeProtected --tsconfig tsconfig.json ./src",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js -v",
-    "posttypedoc": "shx cp .nojekyll docs/.nojekyll",
+    "postdoc": "shx cp .nojekyll docs/.nojekyll",
     "coverage": "nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text npm run test"
   },
   "dependencies": {},

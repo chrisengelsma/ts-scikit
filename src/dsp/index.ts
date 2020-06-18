@@ -3,3 +3,8 @@ export { Histogram } from './histogram';
 export { Tensors3 } from './tensors3';
 export { EigenSolver } from './eigen-solver';
 export { EigenTensors3 } from './eigen-tensors3';
+export { FftReal } from './fft-real';
+export { FftComplex } from './fft-complex';
+export { Fft } from './fft';
+export { FftFilter } from './fft-filter';
+export { BandPassFilter } from './band-pass-filter';

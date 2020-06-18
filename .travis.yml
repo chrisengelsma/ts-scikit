@@ -26,6 +26,7 @@ deploy:
     local_dir: docs/
     github_token: $GITHUB_TOKEN
     on:
+      branch: master
       tags: true
   - provider: releases
     api_key: $GITHUB_TOKEN
@@ -33,10 +34,12 @@ deploy:
     file: "ts-scikit-*.tgz"
     skip_cleanup: true
     on:
+      branch: master
       tags: true
   - provider: npm
     skip_cleanup: true
     email: "chris.engelsma@gmail.com"
     api_key: $NPM_TOKEN
     on:
+      branch: master
       tags: true
