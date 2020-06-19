@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { BoundingBox, Point3 } from '../../src/maths';
+import { BoundingBox, Point3 } from '../../src/sgl';
 
 describe('BoundingBox', () => {
 

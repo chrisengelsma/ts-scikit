@@ -101,9 +101,9 @@ export class Fft {
   private _center2: boolean;
   private _center3: boolean;
 
-  private complex: boolean;
+  private _complex: boolean;
 
-  private overwrite: boolean;
+  private _overwrite: boolean;
 
   static FromData(f: number[] | number[][] | number[][][], complex: boolean = false) {
     if (f[0] instanceof Array) {
@@ -225,14 +225,37 @@ export class Fft {
           new Sampling(n1)
         );
       } else if (n1[0] instanceof Array) {
+
         if (n1[0][0] instanceof Array) {
+          n1 = n1 as unknown as number[][][];
           this._init(
             new Sampling(n1[0][0].length / 2),
             new Sampling(n1[0].length),
             new Sampling(n1.length)
           );
+        } else {
+          n1 = n1 as unknown as number[][];
+          this._init(
+            new Sampling(n1[0].length / 2),
+            new Sampling(n1.length)
+          );
         }
+      } else if (n1 instanceof Array) {
+        this._init(new Sampling(n1.length / 2));
       }
+    }
+  }
+
+  /**
+   * Sets the type of input (output) values for forward (inverse) transforms.
+   * <p>
+   * The default type is real.
+   * @param complex true, for complex values; false, for real values.
+   */
+  setComplex(complex: boolean): void {
+    if (this._complex !== complex) {
+      this._complex = complex;
+      this._updateSampling1();
     }
   }
 
@@ -248,6 +271,104 @@ export class Fft {
     this._updateSampling1();
     this._updateSampling2();
     this._updateSampling3();
+  }
+
+  private _updateSampling1(): void {
+    if (this._sx1 === null) { return; }
+    const nx = this._sx1.count;
+    const dx = this._sx1.delta;
+    const npad = nx + this._padding1;
+    let nfft, nk, dk, fk;
+    if (this._complex) {
+      nfft = FftComplex.SmallNFFT(npad);
+      dk = 1.0 / ( nfft * dx );
+      if (this._center1) {
+        const even = nfft % 2 === 0;
+        nk = even ? nfft + 1 : nfft;
+        fk = even ? -0.5 / dx : -0.5 / dx + 0.5 * dk;
+      } else {
+        nk = nfft;
+        fk = 0.0;
+      }
+      if (this._fft1c === null || this._nfft1 !== nfft) {
+        this._fft1c = new FftComplex(nfft);
+        this._fft1r = null;
+        this._nfft1 = nfft;
+      }
+    } else {
+      nfft = FftReal.SmallNFFT(npad);
+      dk = 1.0 / ( nfft * dx );
+      if (this._center1) {
+        nk = nfft + 1;
+        fk = -0.5 / dx;
+      } else {
+        nk = nfft / 2 + 1;
+        fk = 0.0;
+      }
+      if (this._fft1r === null || this._nfft1 !== nfft) {
+        this._fft1r = new FftReal(nfft);
+        this._fft1c = null;
+        this._nfft1 = nfft;
+      }
+    }
+    this._sk1 = new Sampling(nk, dk, fk);
+  }
+
+  private _updateSampling2(): void {
+    if (this._sx2 === null) { return; }
+    const nx = this._sx2.count;
+    const dx = this._sx2.delta;
+    const npad = nx + this._padding2;
+    const nfft = FftComplex.SmallNFFT(npad);
+    const dk = 1.0 / ( nfft * dx );
+    let fk, nk;
+    if (this._center2) {
+      const even = nfft % 2 === 0;
+      nk = even ? nfft + 1 : nfft;
+      fk = even ? -0.5 / dx : -0.5 / dx + 0.5 * dk;
+    } else {
+      nk = nfft;
+      fk = 0.0;
+    }
+    if (this._fft2 === null || this._nfft2 !== nfft) {
+      this._fft2 = new FftComplex(nfft);
+      this._nfft2 = nfft;
+    }
+    this._sx2 = new Sampling(nk, dk, fk);
+  }
+
+  private _updateSampling3(): void {
+    if (this._sx3 === null) { return; }
+    const nx = this._sx3.count;
+    const dx = this._sx3.delta;
+    const npad = nx + this._padding3;
+    const nfft = FftComplex.SmallNFFT(npad);
+    const dk = 1.0 / ( nfft * dx );
+    let fk, nk;
+    if (this._center3) {
+      const even = nfft % 2 === 0;
+      nk = even ? nfft + 1 : nfft;
+      fk = even ? -0.5 / dx : -0.5 / dx + 0.5 * dk;
+    } else {
+      nk = nfft;
+      fk = 0.0;
+    }
+    if (this._fft3 === null || this._nfft3 !== nfft) {
+      this._fft3 = new FftComplex(nfft);
+      this._nfft3 = nfft;
+    }
+    this._sk3 = new Sampling(nk, dk, fk);
+  }
+
+  private _pad(f: number[]): number[] {
+    const nk1 = this._sk1.count;
+    const fpad: number[] = new Array<number>(2 * nk1);
+    if (this._complex) {
+
+    } else {
+
+    }
+    return fpad;
   }
 
 }

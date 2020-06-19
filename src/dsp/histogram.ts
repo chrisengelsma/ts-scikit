@@ -1,4 +1,4 @@
-import { Check, MathsUtils } from '../utils';
+import { Check, quickPartialSort, copy } from '../utils';
 import { Sampling } from './sampling';
 
 /**
@@ -141,10 +141,10 @@ export class Histogram {
         const n = t.length;
         if (n > 0) {
           const k25 = Math.round(0.25 * ( n - 1 ));
-          MathsUtils.QuickPartialSort(k25, t);
+          quickPartialSort(k25, t);
           const v25 = t[k25];
           const k75 = Math.round(0.75 * ( n - 1 ));
-          MathsUtils.QuickPartialSort(k75, t);
+          quickPartialSort(k75, t);
           const v75 = t[k75];
 
           if (v25 < v75) {
@@ -218,7 +218,7 @@ export class Histogram {
         }
       }
       if (m < n) {
-        t = MathsUtils.Copy(t, m);
+        t = copy(t, m);
       }
     }
     return t;

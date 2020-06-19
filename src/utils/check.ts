@@ -10,7 +10,7 @@ export class Check {
    */
   static argument(condition: boolean, message: string): void {
     if (!condition) {
-      throw new IllegalArgumentError(`required condition: ${message}`);
+      throw new IllegalArgumentError(`required condition: ${ message }`);
     }
   }
 
@@ -22,7 +22,7 @@ export class Check {
    */
   static state(condition: boolean, message: string): void {
     if (!condition) {
-      throw new IllegalStateError(`required condition: ${message}`);
+      throw new IllegalStateError(`required condition: ${ message }`);
     }
   }
 

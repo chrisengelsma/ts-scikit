@@ -1,4 +1,4 @@
-import { Check, MathsUtils } from '../utils';
+import { Check, binarySearch } from '../utils';
 
 /**
  * A prime-factor (PFA) complex-to-complex FFT.
@@ -172,7 +172,7 @@ export class FftPfa {
    * @returns true, if FFT length is value; false, otherwise.
    */
   static IsValidNFFT(nfft: number): boolean {
-    return MathsUtils.BinarySearch(this._ntable, nfft) >= 0;
+    return binarySearch(this._ntable, nfft) >= 0;
   }
 
   /**
@@ -185,7 +185,7 @@ export class FftPfa {
    */
   static SmallNFFT(n: number): number {
     Check.argument(n <= 720720, 'n does not exceed 720720');
-    let i = MathsUtils.BinarySearch(this._ntable, n);
+    let i = binarySearch(this._ntable, n);
     if (i < 0) { i = -( i + 1 ); }
     return this._ntable[i];
   }
@@ -200,7 +200,7 @@ export class FftPfa {
    */
   static FastNFFT(n: number): number {
     Check.argument(n <= 720720, 'n does not exceed 720720');
-    let ifast = MathsUtils.BinarySearch(this._ntable, n);
+    let ifast = binarySearch(this._ntable, n);
     if (ifast < 0) { ifast = -( ifast + 1 );}
 
     let nfast = this._ntable[ifast];
