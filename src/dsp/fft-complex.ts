@@ -1,5 +1,6 @@
 import { Check } from '../utils';
 import { FftPfa } from './fft-pfa';
+import { ccopy } from '../utils/array-math';
 
 /**
  * A fast Fourier transform of complex-valued arrays.
@@ -114,9 +115,7 @@ export class FftComplex {
     FftComplex._checkSign(sign);
     FftComplex._checkArray(cx, 'cx', 2 * this._nfft);
     FftComplex._checkArray(cy, 'cy', 2 * this._nfft);
-    if (cx !== cy) {
-      for (let i1 = 0; i1 < 2 * this._nfft; ++i1) { cy[i1] = cx[i1]; }
-    }
+    if (cx !== cy) { cy = ccopy(cx, this._nfft); }
     FftPfa.Transform(sign, this._nfft, cy);
   }
 

@@ -206,7 +206,7 @@ export class FftPfa {
     let nfast = this._ntable[ifast];
     const nstop = 2 * nfast;
     let cfast = this._ctable[ifast];
-    for (let i = ifast + 1; i < this._NTABLE && this._ntable[i] < nstop; ++i) {
+    for (let i = ifast + 1; i < this._NTABLE && this._ntable[i] < nstop; i++) {
       if (this._ctable[i] < cfast) {
         cfast = this._ctable[i];
         nfast = this._ntable[i];
@@ -226,16 +226,16 @@ export class FftPfa {
     let nleft = nfft;
 
     // Loop over all possible factors, from largest to smallest.
-    for (let jfac = 0; jfac < this._NFAC; ++jfac) {
+    for (let jfac = 0; jfac < this._NFAC; jfac++) {
 
       // Skip the current factor if not a mutually prime factor of n.
-      let ifac = this._kfac[jfac];
-      let ndiv = nleft / ifac;
-      if (ndiv * ifac != nleft) { continue; }
+      let ifac = Math.floor(this._kfac[jfac]);
+      let ndiv = Math.floor(nleft / ifac);
+      if (ndiv * ifac !== nleft) { continue; }
 
       // What is left of n (nleft), and n divided by the current factor (m).
       nleft = ndiv;
-      let m = nfft / ifac;
+      let m = Math.floor(nfft / ifac);
 
       // Rotation factor mu and stride mm.
       let mu = 0;
@@ -251,7 +251,7 @@ export class FftPfa {
       let jinc = 2 * mm;
       let jmax = 2 * nfft;
       let j0 = 0;
-      let j1 = j0 * jinc;
+      let j1 = j0 + jinc;
 
       // Factor 2.
       if (ifac === 2) {
@@ -272,7 +272,7 @@ export class FftPfa {
         this._pfa4(z, mu, m, j0, j1, j2, j3);
         continue;
       }
-      let j4 = ( j3 * jinc ) % jmax;
+      let j4 = ( j3 + jinc ) % jmax;
 
       // Factor 5.
       if (ifac === 5) {
@@ -283,21 +283,21 @@ export class FftPfa {
       let j6 = ( j5 + jinc ) % jmax;
 
       // Factor 7.
-      if (ifac == 7) {
+      if (ifac === 7) {
         this._pfa7(z, mu, m, j0, j1, j2, j3, j4, j5, j6);
         continue;
       }
       let j7 = ( j6 + jinc ) % jmax;
 
       // Factor 8.
-      if (ifac == 8) {
+      if (ifac === 8) {
         this._pfa8(z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7);
         continue;
       }
       let j8 = ( j7 + jinc ) % jmax;
 
       // Factor 9.
-      if (ifac == 9) {
+      if (ifac === 9) {
         this._pfa9(z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8);
         continue;
       }
@@ -305,7 +305,7 @@ export class FftPfa {
       let j10 = ( j9 + jinc ) % jmax;
 
       // Factor 11.
-      if (ifac == 11) {
+      if (ifac === 11) {
         this._pfa11(z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10);
         continue;
       }
@@ -313,7 +313,7 @@ export class FftPfa {
       let j12 = ( j11 + jinc ) % jmax;
 
       // Factor 13.
-      if (ifac == 13) {
+      if (ifac === 13) {
         this._pfa13(z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12);
         continue;
       }
@@ -322,7 +322,7 @@ export class FftPfa {
       let j15 = ( j14 + jinc ) % jmax;
 
       // Factor 16.
-      if (ifac == 16) {
+      if (ifac === 16) {
         this._pfa16(z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14, j15);
       }
     }
@@ -374,28 +374,28 @@ export class FftPfa {
       let j1 = j0 + jinc;
 
       // Factor 2.
-      if (ifac == 2) {
+      if (ifac === 2) {
         this._pfa2a(n1, z, m, j0, j1);
         continue;
       }
       let j2 = ( j1 + jinc ) % jmax;
 
       // Factor 3.
-      if (ifac == 3) {
+      if (ifac === 3) {
         this._pfa3a(n1, z, mu, m, j0, j1, j2);
         continue;
       }
       let j3 = ( j2 + jinc ) % jmax;
 
       // Factor 4.
-      if (ifac == 4) {
+      if (ifac === 4) {
         this._pfa4a(n1, z, mu, m, j0, j1, j2, j3);
         continue;
       }
       let j4 = ( j3 + jinc ) % jmax;
 
       // Factor 5.
-      if (ifac == 5) {
+      if (ifac === 5) {
         this._pfa5a(n1, z, mu, m, j0, j1, j2, j3, j4);
         continue;
       }
@@ -403,21 +403,21 @@ export class FftPfa {
       let j6 = ( j5 + jinc ) % jmax;
 
       // Factor 7.
-      if (ifac == 7) {
+      if (ifac === 7) {
         this._pfa7a(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6);
         continue;
       }
       let j7 = ( j6 + jinc ) % jmax;
 
       // Factor 8.
-      if (ifac == 8) {
+      if (ifac === 8) {
         this._pfa8a(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7);
         continue;
       }
       let j8 = ( j7 + jinc ) % jmax;
 
       // Factor 9.
-      if (ifac == 9) {
+      if (ifac === 9) {
         this._pfa9a(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8);
         continue;
       }
@@ -425,7 +425,7 @@ export class FftPfa {
       let j10 = ( j9 + jinc ) % jmax;
 
       // Factor 11.
-      if (ifac == 11) {
+      if (ifac === 11) {
         this._pfa11a(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10);
         continue;
       }
@@ -433,7 +433,7 @@ export class FftPfa {
       let j12 = ( j11 + jinc ) % jmax;
 
       // Factor 13.
-      if (ifac == 13) {
+      if (ifac === 13) {
         this._pfa13a(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12);
         continue;
       }
@@ -442,7 +442,7 @@ export class FftPfa {
       let j15 = ( j14 + jinc ) % jmax;
 
       // Factor 16.
-      if (ifac == 16) {
+      if (ifac === 16) {
         this._pfa16a(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14, j15);
       }
     }
@@ -493,28 +493,28 @@ export class FftPfa {
       let j1 = j0 + jinc;
 
       // Factor 2.
-      if (ifac == 2) {
+      if (ifac === 2) {
         this._pfa2b(n1, z, m, j0, j1);
         continue;
       }
       let j2 = ( j1 + jinc ) % jmax;
 
       // Factor 3.
-      if (ifac == 3) {
+      if (ifac === 3) {
         this._pfa3b(n1, z, mu, m, j0, j1, j2);
         continue;
       }
       let j3 = ( j2 + jinc ) % jmax;
 
       // Factor 4.
-      if (ifac == 4) {
+      if (ifac === 4) {
         this._pfa4b(n1, z, mu, m, j0, j1, j2, j3);
         continue;
       }
       let j4 = ( j3 + jinc ) % jmax;
 
       // Factor 5.
-      if (ifac == 5) {
+      if (ifac === 5) {
         this._pfa5b(n1, z, mu, m, j0, j1, j2, j3, j4);
         continue;
       }
@@ -522,21 +522,21 @@ export class FftPfa {
       let j6 = ( j5 + jinc ) % jmax;
 
       // Factor 7.
-      if (ifac == 7) {
+      if (ifac === 7) {
         this._pfa7b(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6);
         continue;
       }
       let j7 = ( j6 + jinc ) % jmax;
 
       // Factor 8.
-      if (ifac == 8) {
+      if (ifac === 8) {
         this._pfa8b(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7);
         continue;
       }
       let j8 = ( j7 + jinc ) % jmax;
 
       // Factor 9.
-      if (ifac == 9) {
+      if (ifac === 9) {
         this._pfa9b(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8);
         continue;
       }
@@ -544,7 +544,7 @@ export class FftPfa {
       let j10 = ( j9 + jinc ) % jmax;
 
       // Factor 11.
-      if (ifac == 11) {
+      if (ifac === 11) {
         this._pfa11b(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10);
         continue;
       }
@@ -552,7 +552,7 @@ export class FftPfa {
       let j12 = ( j11 + jinc ) % jmax;
 
       // Factor 13.
-      if (ifac == 13) {
+      if (ifac === 13) {
         this._pfa13b(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12);
         continue;
       }
@@ -561,22 +561,24 @@ export class FftPfa {
       let j15 = ( j14 + jinc ) % jmax;
 
       // Factor 16.
-      if (ifac == 16) {
+      if (ifac === 16) {
         this._pfa16b(n1, z, mu, m, j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14, j15);
       }
     }
   }
 
   private static _pfa2(z: number[], m: number, j0: number, j1: number): void {
-    for (let i = 0; i < m; ++i) {
-      let t1r = z[j0] - z[j1];
+    for (let i = 0; i < m; i++) {
+      let t1r = z[j0    ] - z[j1    ];
       let t1i = z[j0 + 1] - z[j1 + 1];
-      z[j0] = z[j0] + z[j1];
+
+      z[j0    ] = z[j0    ] + z[j1    ];
       z[j0 + 1] = z[j0 + 1] + z[j1 + 1];
-      z[j1] = t1r;
+      z[j1    ] = t1r;
       z[j1 + 1] = t1i;
+
       const jt = j1 + 2;
-      j1 = j0 + 1;
+      j1 = j0 + 2;
       j0 = jt;
     }
   }
@@ -584,20 +586,22 @@ export class FftPfa {
   private static _pfa3(z: number[], mu: number, m: number,
                        j0: number, j1: number, j2: number): void {
     let c1: number;
-    if (mu == 1) { c1 = this._P866; } else { c1 = -this._P866; }
-    for (let i = 0; i < m; ++i) {
+    if (mu === 1) { c1 = this._P866; } else { c1 = -this._P866; }
+    for (let i = 0; i < m; i++) {
       let t1r = z[j1] + z[j2];
       let t1i = z[j1 + 1] + z[j2 + 1];
       let y1r = z[j0] - 0.5 * t1r;
       let y1i = z[j0 + 1] - 0.5 * t1i;
       let y2r = c1 * ( z[j1] - z[j2] );
       let y2i = c1 * ( z[j1 + 1] - z[j2 + 1] );
+
       z[j0] = z[j0] + t1r;
       z[j0 + 1] = z[j0 + 1] + t1i;
       z[j1] = y1r - y2i;
       z[j1 + 1] = y1i + y2r;
       z[j2] = y1r + y2i;
       z[j2 + 1] = y1i - y2r;
+
       const jt = j2 + 2;
       j2 = j1 + 2;
       j1 = j0 + 2;
@@ -608,8 +612,8 @@ export class FftPfa {
   private static _pfa4(z: number[], mu: number, m: number,
                        j0: number, j1: number, j2: number, j3: number): void {
     let c1: number;
-    if (mu == 1) { c1 = this._PONE; } else { c1 = -this._PONE; }
-    for (let i = 0; i < m; ++i) {
+    if (mu === 1) { c1 = this._PONE; } else { c1 = -this._PONE; }
+    for (let i = 0; i < m; i++) {
       let t1r = z[j0] + z[j2];
       let t1i = z[j0 + 1] + z[j2 + 1];
       let t2r = z[j1] + z[j3];
@@ -618,6 +622,7 @@ export class FftPfa {
       let y1i = z[j0 + 1] - z[j2 + 1];
       let y3r = c1 * ( z[j1] - z[j3] );
       let y3i = c1 * ( z[j1 + 1] - z[j3 + 1] );
+
       z[j0] = t1r + t2r;
       z[j0 + 1] = t1i + t2i;
       z[j1] = y1r - y3i;
@@ -626,6 +631,7 @@ export class FftPfa {
       z[j2 + 1] = t1i - t2i;
       z[j3] = y1r + y3i;
       z[j3 + 1] = y1i - y3r;
+
       const jt = j3 + 2;
       j3 = j2 + 2;
       j2 = j1 + 2;
@@ -638,15 +644,15 @@ export class FftPfa {
                        j0: number, j1: number, j2: number, j3: number,
                        j4: number): void {
     let c1, c2, c3;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P559;
       c2 = this._P951;
       c3 = this._P587;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = -this._P559;
       c2 = this._P587;
       c3 = -this._P951;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._P559;
       c2 = -this._P587;
       c3 = this._P951;
@@ -655,7 +661,7 @@ export class FftPfa {
       c2 = -this._P951;
       c3 = -this._P587;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let t1r = z[j1] + z[j4];
       let t1i = z[j1 + 1] + z[j4 + 1];
       let t2r = z[j2] + z[j3];
@@ -678,17 +684,19 @@ export class FftPfa {
       let y3i = c3 * t3i - c2 * t4i;
       let y4r = c2 * t3r + c3 * t4r;
       let y4i = c2 * t3i + c3 * t4i;
-      z[j0] = z[j0] + t5r;
+
+      z[j0    ] = z[j0    ] + t5r;
       z[j0 + 1] = z[j0 + 1] + t5i;
-      z[j1] = y1r - y4i;
+      z[j1    ] = y1r - y4i;
       z[j1 + 1] = y1i + y4r;
-      z[j2] = y2r - y3i;
+      z[j2    ] = y2r - y3i;
       z[j2 + 1] = y2i + y3r;
-      z[j3] = y2r + y3i;
+      z[j3    ] = y2r + y3i;
       z[j3 + 1] = y2i - y3r;
-      z[j4] = y1r + y4i;
+      z[j4    ] = y1r + y4i;
       z[j4 + 1] = y1i - y4r;
-      const jt = j4 + 2;
+
+      let jt = j4 + 2;
       j4 = j3 + 2;
       j3 = j2 + 2;
       j2 = j1 + 2;
@@ -701,35 +709,35 @@ export class FftPfa {
                        j0: number, j1: number, j2: number, j3: number,
                        j4: number, j5: number, j6: number): void {
     let c1, c2, c3, c4, c5, c6;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P623;
       c2 = -this._P222;
       c3 = -this._P900;
       c4 = this._P781;
       c5 = this._P974;
       c6 = this._P433;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = -this._P222;
       c2 = -this._P900;
       c3 = this._P623;
       c4 = this._P974;
       c5 = -this._P433;
       c6 = -this._P781;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._P900;
       c2 = this._P623;
       c3 = -this._P222;
       c4 = this._P433;
       c5 = -this._P781;
       c6 = this._P974;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = -this._P900;
       c2 = this._P623;
       c3 = -this._P222;
       c4 = -this._P433;
       c5 = this._P781;
       c6 = -this._P974;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P222;
       c2 = -this._P900;
       c3 = this._P623;
@@ -744,7 +752,7 @@ export class FftPfa {
       c5 = -this._P974;
       c6 = -this._P433;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let t1r = z[j1] + z[j6];
       let t1i = z[j1 + 1] + z[j6 + 1];
       let t2r = z[j2] + z[j5];
@@ -775,6 +783,7 @@ export class FftPfa {
       let y5i = c5 * t4i - c6 * t5i - c4 * t6i;
       let y6r = c4 * t4r + c5 * t5r + c6 * t6r;
       let y6i = c4 * t4i + c5 * t5i + c6 * t6i;
+
       z[j0] = z[j0] + t1r + t2r + t3r;
       z[j0 + 1] = z[j0 + 1] + t1i + t2i + t3i;
       z[j1] = y1r - y6i;
@@ -789,6 +798,7 @@ export class FftPfa {
       z[j5 + 1] = y2i - y5r;
       z[j6] = y1r + y6i;
       z[j6 + 1] = y1i - y6r;
+
       const jt = j6 + 2;
       j6 = j5 + 2;
       j5 = j4 + 2;
@@ -804,13 +814,13 @@ export class FftPfa {
                        j0: number, j1: number, j2: number, j3: number,
                        j4: number, j5: number, j6: number, j7: number): void {
     let c1, c2, c3;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._PONE;
       c2 = this._P707;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._PONE;
       c2 = -this._P707;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = this._PONE;
       c2 = -this._P707;
     } else {
@@ -818,7 +828,7 @@ export class FftPfa {
       c2 = this._P707;
     }
     c3 = c1 * c2;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let t1r = z[j0] + z[j4];
       let t1i = z[j0 + 1] + z[j4 + 1];
       let t2r = z[j0] - z[j4];
@@ -855,6 +865,7 @@ export class FftPfa {
       let y6i = c1 * ( t3i - t7i );
       let y7r = t12r + t6r;
       let y7i = t12i + t6i;
+
       z[j0] = t9r + t10r;
       z[j0 + 1] = t9i + t10i;
       z[j1] = y1r - y7i;
@@ -871,6 +882,7 @@ export class FftPfa {
       z[j6 + 1] = y2i - y6r;
       z[j7] = y1r + y7i;
       z[j7 + 1] = y1i - y7r;
+
       const jt = j7 + 2;
       j7 = j6 + 2;
       j6 = j5 + 2;
@@ -888,48 +900,48 @@ export class FftPfa {
                        j4: number, j5: number, j6: number, j7: number,
                        j8: number): void {
     let c1, c2, c3, c4, c5, c6, c7, c8, c9;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P866;
       c2 = this._P766;
       c3 = this._P642;
       c4 = this._P173;
       c5 = this._P984;
-    } else if (mu == 2) {
-      c1 = this._P866;
+    } else if (mu === 2) {
+      c1 = -this._P866;
       c2 = this._P173;
       c3 = this._P984;
-      c4 = this._P939;
+      c4 = -this._P939;
       c5 = this._P342;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = this._P866;
-      c2 = this._P939;
+      c2 = -this._P939;
       c3 = this._P342;
       c4 = this._P766;
-      c5 = this._P642;
-    } else if (mu == 5) {
-      c1 = this._P866;
-      c2 = this._P939;
-      c3 = this._P342;
+      c5 = -this._P642;
+    } else if (mu === 5) {
+      c1 = -this._P866;
+      c2 = -this._P939;
+      c3 = -this._P342;
       c4 = this._P766;
       c5 = this._P642;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = this._P866;
       c2 = this._P173;
-      c3 = this._P984;
-      c4 = this._P939;
-      c5 = this._P342;
+      c3 = -this._P984;
+      c4 = -this._P939;
+      c5 = -this._P342;
     } else {
-      c1 = this._P866;
+      c1 = -this._P866;
       c2 = this._P766;
-      c3 = this._P642;
+      c3 = -this._P642;
       c4 = this._P173;
-      c5 = this._P984;
+      c5 = -this._P984;
     }
     c6 = c1 * c2;
     c7 = c1 * c3;
     c8 = c1 * c4;
     c9 = c1 * c5;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let t1r = z[j3] + z[j6];
       let t1i = z[j3 + 1] + z[j6 + 1];
       let t2r = z[j0] - 0.5 * t1r;
@@ -992,6 +1004,7 @@ export class FftPfa {
       let y7i = t21i - t3i;
       let y8r = t3r + t20r;
       let y8i = t3i + t20i;
+
       z[j0] = t4r + t13r;
       z[j0 + 1] = t4i + t13i;
       z[j1] = y1r - y8i;
@@ -1010,6 +1023,7 @@ export class FftPfa {
       z[j7 + 1] = y2i - y7r;
       z[j8] = y1r + y8i;
       z[j8 + 1] = y1i - y8r;
+
       const jt = j8 + 2;
       j8 = j7 + 2;
       j7 = j6 + 2;
@@ -1028,118 +1042,118 @@ export class FftPfa {
                         j4: number, j5: number, j6: number, j7: number,
                         j8: number, j9: number, j10: number): void {
     let c1, c2, c3, c4, c5, c6, c7, c8, c9, c10;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P841;
       c2 = this._P415;
-      c3 = this._P142;
-      c4 = this._P654;
-      c5 = this._P959;
+      c3 = -this._P142;
+      c4 = -this._P654;
+      c5 = -this._P959;
       c6 = this._P540;
       c7 = this._P909;
       c8 = this._P989;
       c9 = this._P755;
       c10 = this._P281;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = this._P415;
-      c2 = this._P654;
-      c3 = this._P959;
-      c4 = this._P142;
+      c2 = -this._P654;
+      c3 = -this._P959;
+      c4 = -this._P142;
       c5 = this._P841;
       c6 = this._P909;
       c7 = this._P755;
-      c8 = this._P281;
-      c9 = this._P989;
-      c10 = this._P540;
-    } else if (mu == 3) {
-      c1 = this._P142;
-      c2 = this._P959;
+      c8 = -this._P281;
+      c9 = -this._P989;
+      c10 = -this._P540;
+    } else if (mu === 3) {
+      c1 = -this._P142;
+      c2 = -this._P959;
       c3 = this._P415;
       c4 = this._P841;
-      c5 = this._P654;
+      c5 = -this._P654;
       c6 = this._P989;
-      c7 = this._P281;
-      c8 = this._P909;
+      c7 = -this._P281;
+      c8 = -this._P909;
       c9 = this._P540;
       c10 = this._P755;
-    } else if (mu == 4) {
-      c1 = this._P654;
-      c2 = this._P142;
-      c3 = this._P841;
-      c4 = this._P959;
-      c5 = this._P415;
-      c6 = this._P755;
-      c7 = this._P989;
-      c8 = this._P540;
-      c9 = this._P281;
-      c10 = this._P909;
-    } else if (mu == 5) {
-      c1 = this._P959;
+    } else if (mu === 4) {
+      c1 =  -this._P654;
+      c2 =  -this._P142;
+      c3 =   this._P841;
+      c4 =  -this._P959;
+      c5 =   this._P415;
+      c6 =   this._P755;
+      c7 =  -this._P989;
+      c8 =   this._P540;
+      c9 =   this._P281;
+      c10 = -this._P909;
+    } else if (mu === 5) {
+      c1 =  -this._P959;
+      c2 =   this._P841;
+      c3 =  -this._P654;
+      c4 =   this._P415;
+      c5 =  -this._P142;
+      c6 =   this._P281;
+      c7 =  -this._P540;
+      c8 =   this._P755;
+      c9 =  -this._P909;
+      c10 =  this._P989;
+    } else if (mu === 6) {
+      c1 = -this._P959;
       c2 = this._P841;
-      c3 = this._P654;
+      c3 = -this._P654;
       c4 = this._P415;
-      c5 = this._P142;
-      c6 = this._P281;
+      c5 = -this._P142;
+      c6 = -this._P281;
       c7 = this._P540;
-      c8 = this._P755;
+      c8 = -this._P755;
       c9 = this._P909;
-      c10 = this._P989;
-    } else if (mu == 6) {
-      c1 = this._P959;
-      c2 = this._P841;
-      c3 = this._P654;
-      c4 = this._P415;
-      c5 = this._P142;
-      c6 = this._P281;
-      c7 = this._P540;
-      c8 = this._P755;
-      c9 = this._P909;
-      c10 = this._P989;
-    } else if (mu == 7) {
-      c1 = this._P654;
-      c2 = this._P142;
+      c10 = -this._P989;
+    } else if (mu === 7) {
+      c1 = -this._P654;
+      c2 = -this._P142;
       c3 = this._P841;
-      c4 = this._P959;
+      c4 = -this._P959;
       c5 = this._P415;
-      c6 = this._P755;
+      c6 = -this._P755;
       c7 = this._P989;
-      c8 = this._P540;
-      c9 = this._P281;
+      c8 = -this._P540;
+      c9 = -this._P281;
       c10 = this._P909;
-    } else if (mu == 8) {
-      c1 = this._P142;
-      c2 = this._P959;
+    } else if (mu === 8) {
+      c1 = -this._P142;
+      c2 = -this._P959;
       c3 = this._P415;
       c4 = this._P841;
-      c5 = this._P654;
-      c6 = this._P989;
+      c5 = -this._P654;
+      c6 = -this._P989;
       c7 = this._P281;
       c8 = this._P909;
-      c9 = this._P540;
-      c10 = this._P755;
-    } else if (mu == 9) {
+      c9 = -this._P540;
+      c10 = -this._P755;
+    } else if (mu === 9) {
       c1 = this._P415;
-      c2 = this._P654;
-      c3 = this._P959;
-      c4 = this._P142;
+      c2 = -this._P654;
+      c3 = -this._P959;
+      c4 = -this._P142;
       c5 = this._P841;
-      c6 = this._P909;
-      c7 = this._P755;
+      c6 = -this._P909;
+      c7 = -this._P755;
       c8 = this._P281;
       c9 = this._P989;
       c10 = this._P540;
     } else {
       c1 = this._P841;
       c2 = this._P415;
-      c3 = this._P142;
-      c4 = this._P654;
-      c5 = this._P959;
-      c6 = this._P540;
-      c7 = this._P909;
-      c8 = this._P989;
-      c9 = this._P755;
-      c10 = this._P281;
+      c3 = -this._P142;
+      c4 = -this._P654;
+      c5 = -this._P959;
+      c6 = -this._P540;
+      c7 = -this._P909;
+      c8 = -this._P989;
+      c9 = -this._P755;
+      c10 = -this._P281;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let t1r = z[j1] + z[j10];
       let t1i = z[j1 + 1] + z[j10 + 1];
       let t2r = z[j2] + z[j9];
@@ -1190,6 +1204,7 @@ export class FftPfa {
       let y9i = c7 * t6i + c9 * t7i - c10 * t8i - c8 * t9i - c6 * t10i;
       let y10r = c6 * t6r + c7 * t7r + c8 * t8r + c9 * t9r + c10 * t10r;
       let y10i = c6 * t6i + c7 * t7i + c8 * t8i + c9 * t9i + c10 * t10i;
+
       z[j0] = z[j0] + t1r + t2r + t3r + t4r + t5r;
       z[j0 + 1] = z[j0 + 1] + t1i + t2i + t3i + t4i + t5i;
       z[j1] = y1r - y10i;
@@ -1212,6 +1227,7 @@ export class FftPfa {
       z[j9 + 1] = y2i - y9r;
       z[j10] = y1r + y10i;
       z[j10 + 1] = y1i - y10r;
+
       const jt = j10 + 2;
       j10 = j9 + 2;
       j9 = j8 + 2;
@@ -1233,146 +1249,146 @@ export class FftPfa {
                         j8: number, j9: number, j10: number, j11: number,
                         j12: number): void {
     let c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P885;
       c2 = this._P568;
       c3 = this._P120;
-      c4 = this._P354;
-      c5 = this._P748;
-      c6 = this._P970;
+      c4 = -this._P354;
+      c5 = -this._P748;
+      c6 = -this._P970;
       c7 = this._P464;
       c8 = this._P822;
       c9 = this._P992;
       c10 = this._P935;
       c11 = this._P663;
       c12 = this._P239;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = this._P568;
-      c2 = this._P354;
-      c3 = this._P970;
-      c4 = this._P748;
+      c2 = -this._P354;
+      c3 = -this._P970;
+      c4 = -this._P748;
       c5 = this._P120;
       c6 = this._P885;
       c7 = this._P822;
       c8 = this._P935;
       c9 = this._P239;
-      c10 = this._P663;
-      c11 = this._P992;
-      c12 = this._P464;
-    } else if (mu == 3) {
+      c10 = -this._P663;
+      c11 = -this._P992;
+      c12 = -this._P464;
+    } else if (mu === 3) {
       c1 = this._P120;
-      c2 = this._P970;
-      c3 = this._P354;
+      c2 = -this._P970;
+      c3 = -this._P354;
       c4 = this._P885;
       c5 = this._P568;
-      c6 = this._P748;
+      c6 = -this._P748;
       c7 = this._P992;
       c8 = this._P239;
-      c9 = this._P935;
-      c10 = this._P464;
+      c9 = -this._P935;
+      c10 = -this._P464;
       c11 = this._P822;
       c12 = this._P663;
-    } else if (mu == 4) {
-      c1 = this._P354;
-      c2 = this._P748;
+    } else if (mu === 4) {
+      c1 = -this._P354;
+      c2 = -this._P748;
       c3 = this._P885;
       c4 = this._P120;
-      c5 = this._P970;
+      c5 = -this._P970;
       c6 = this._P568;
       c7 = this._P935;
-      c8 = this._P663;
-      c9 = this._P464;
+      c8 = -this._P663;
+      c9 = -this._P464;
       c10 = this._P992;
-      c11 = this._P239;
-      c12 = this._P822;
-    } else if (mu == 5) {
-      c1 = this._P748;
+      c11 = -this._P239;
+      c12 = -this._P822;
+    } else if (mu === 5) {
+      c1 = -this._P748;
       c2 = this._P120;
       c3 = this._P568;
-      c4 = this._P970;
+      c4 = -this._P970;
       c5 = this._P885;
-      c6 = this._P354;
+      c6 = -this._P354;
       c7 = this._P663;
-      c8 = this._P992;
+      c8 = -this._P992;
       c9 = this._P822;
-      c10 = this._P239;
-      c11 = this._P464;
+      c10 = -this._P239;
+      c11 = -this._P464;
       c12 = this._P935;
-    } else if (mu == 6) {
-      c1 = this._P970;
+    } else if (mu === 6) {
+      c1 = -this._P970;
       c2 = this._P885;
-      c3 = this._P748;
+      c3 = -this._P748;
       c4 = this._P568;
-      c5 = this._P354;
+      c5 = -this._P354;
       c6 = this._P120;
       c7 = this._P239;
-      c8 = this._P464;
+      c8 = -this._P464;
       c9 = this._P663;
-      c10 = this._P822;
+      c10 = -this._P822;
       c11 = this._P935;
-      c12 = this._P992;
-    } else if (mu == 7) {
-      c1 = this._P970;
+      c12 = -this._P992;
+    } else if (mu === 7) {
+      c1 = -this._P970;
       c2 = this._P885;
-      c3 = this._P748;
+      c3 = -this._P748;
       c4 = this._P568;
-      c5 = this._P354;
+      c5 = -this._P354;
       c6 = this._P120;
-      c7 = this._P239;
+      c7 = -this._P239;
       c8 = this._P464;
-      c9 = this._P663;
+      c9 = -this._P663;
       c10 = this._P822;
-      c11 = this._P935;
+      c11 = -this._P935;
       c12 = this._P992;
-    } else if (mu == 8) {
-      c1 = this._P748;
+    } else if (mu === 8) {
+      c1 = -this._P748;
       c2 = this._P120;
       c3 = this._P568;
-      c4 = this._P970;
+      c4 = -this._P970;
       c5 = this._P885;
-      c6 = this._P354;
-      c7 = this._P663;
+      c6 = -this._P354;
+      c7 = -this._P663;
       c8 = this._P992;
-      c9 = this._P822;
+      c9 = -this._P822;
       c10 = this._P239;
       c11 = this._P464;
-      c12 = this._P935;
-    } else if (mu == 9) {
-      c1 = this._P354;
-      c2 = this._P748;
+      c12 = -this._P935;
+    } else if (mu === 9) {
+      c1 = -this._P354;
+      c2 = -this._P748;
       c3 = this._P885;
       c4 = this._P120;
-      c5 = this._P970;
+      c5 = -this._P970;
       c6 = this._P568;
-      c7 = this._P935;
+      c7 = -this._P935;
       c8 = this._P663;
       c9 = this._P464;
-      c10 = this._P992;
+      c10 = -this._P992;
       c11 = this._P239;
       c12 = this._P822;
-    } else if (mu == 10) {
+    } else if (mu === 10) {
       c1 = this._P120;
-      c2 = this._P970;
-      c3 = this._P354;
+      c2 = -this._P970;
+      c3 = -this._P354;
       c4 = this._P885;
       c5 = this._P568;
-      c6 = this._P748;
-      c7 = this._P992;
-      c8 = this._P239;
+      c6 = -this._P748;
+      c7 = -this._P992;
+      c8 = -this._P239;
       c9 = this._P935;
       c10 = this._P464;
-      c11 = this._P822;
-      c12 = this._P663;
-    } else if (mu == 11) {
+      c11 = -this._P822;
+      c12 = -this._P663;
+    } else if (mu === 11) {
       c1 = this._P568;
-      c2 = this._P354;
-      c3 = this._P970;
-      c4 = this._P748;
+      c2 = -this._P354;
+      c3 = -this._P970;
+      c4 = -this._P748;
       c5 = this._P120;
       c6 = this._P885;
-      c7 = this._P822;
-      c8 = this._P935;
-      c9 = this._P239;
+      c7 = -this._P822;
+      c8 = -this._P935;
+      c9 = -this._P239;
       c10 = this._P663;
       c11 = this._P992;
       c12 = this._P464;
@@ -1380,17 +1396,17 @@ export class FftPfa {
       c1 = this._P885;
       c2 = this._P568;
       c3 = this._P120;
-      c4 = this._P354;
-      c5 = this._P748;
-      c6 = this._P970;
-      c7 = this._P464;
-      c8 = this._P822;
-      c9 = this._P992;
-      c10 = this._P935;
-      c11 = this._P663;
-      c12 = this._P239;
+      c4 = -this._P354;
+      c5 = -this._P748;
+      c6 = -this._P970;
+      c7 = -this._P464;
+      c8 = -this._P822;
+      c9 = -this._P992;
+      c10 = -this._P935;
+      c11 = -this._P663;
+      c12 = -this._P239;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let t1r = z[j1] + z[j12];
       let t1i = z[j1 + 1] + z[j12 + 1];
       let t2r = z[j2] + z[j11];
@@ -1451,6 +1467,7 @@ export class FftPfa {
       let y11i = c8 * t7i + c10 * t8i + c12 * t9i - c11 * t10i - c9 * t11i - c7 * t12i;
       let y12r = c7 * t7r + c8 * t8r + c9 * t9r + c10 * t10r + c11 * t11r + c12 * t12r;
       let y12i = c7 * t7i + c8 * t8i + c9 * t9i + c10 * t10i + c11 * t11i + c12 * t12i;
+
       z[j0] = z[j0] + t1r + t2r + t3r + t4r + t5r + t6r;
       z[j0 + 1] = z[j0 + 1] + t1i + t2i + t3i + t4i + t5i + t6i;
       z[j1] = y1r - y12i;
@@ -1477,6 +1494,7 @@ export class FftPfa {
       z[j11 + 1] = y2i - y11r;
       z[j12] = y1r + y12i;
       z[j12 + 1] = y1i - y12r;
+
       const jt = j12 + 2;
       j12 = j11 + 2;
       j11 = j10 + 2;
@@ -1500,51 +1518,51 @@ export class FftPfa {
                         j8: number, j9: number, j10: number, j11: number,
                         j12: number, j13: number, j14: number, j15: number): void {
     let c1, c2, c3, c4, c5, c6, c7;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._PONE;
       c2 = this._P923;
       c3 = this._P382;
       c4 = this._P707;
-    } else if (mu == 3) {
-      c1 = this._PONE;
+    } else if (mu === 3) {
+      c1 = -this._PONE;
       c2 = this._P382;
       c3 = this._P923;
-      c4 = this._P707;
-    } else if (mu == 5) {
+      c4 = -this._P707;
+    } else if (mu === 5) {
       c1 = this._PONE;
-      c2 = this._P382;
+      c2 = -this._P382;
       c3 = this._P923;
-      c4 = this._P707;
-    } else if (mu == 7) {
-      c1 = this._PONE;
-      c2 = this._P923;
+      c4 = -this._P707;
+    } else if (mu === 7) {
+      c1 = -this._PONE;
+      c2 = -this._P923;
       c3 = this._P382;
       c4 = this._P707;
-    } else if (mu == 9) {
+    } else if (mu === 9) {
       c1 = this._PONE;
-      c2 = this._P923;
-      c3 = this._P382;
+      c2 = -this._P923;
+      c3 = -this._P382;
       c4 = this._P707;
-    } else if (mu == 11) {
+    } else if (mu === 11) {
+      c1 = -this._PONE;
+      c2 = -this._P382;
+      c3 = -this._P923;
+      c4 = -this._P707;
+    } else if (mu === 13) {
       c1 = this._PONE;
       c2 = this._P382;
-      c3 = this._P923;
-      c4 = this._P707;
-    } else if (mu == 13) {
-      c1 = this._PONE;
-      c2 = this._P382;
-      c3 = this._P923;
-      c4 = this._P707;
+      c3 = -this._P923;
+      c4 = -this._P707;
     } else {
-      c1 = this._PONE;
+      c1 = -this._PONE;
       c2 = this._P923;
-      c3 = this._P382;
+      c3 = -this._P382;
       c4 = this._P707;
     }
     c5 = c1 * c4;
     c6 = c1 * c3;
     c7 = c1 * c2;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let t1r = z[j0] + z[j8];
       let t1i = z[j0 + 1] + z[j8 + 1];
       let t2r = z[j4] + z[j12];
@@ -1657,6 +1675,7 @@ export class FftPfa {
       let y14i = t42i + t20i;
       let y15r = t38r + t37r;
       let y15i = t38i + t37i;
+
       z[j0] = t31r + t32r;
       z[j0 + 1] = t31i + t32i;
       z[j1] = y1r - y15i;
@@ -1689,6 +1708,7 @@ export class FftPfa {
       z[j14 + 1] = y2i - y14r;
       z[j15] = y1r + y15i;
       z[j15 + 1] = y1i - y15r;
+
       const jt = j15 + 2;
       j15 = j14 + 2;
       j14 = j13 + 2;
@@ -1711,7 +1731,7 @@ export class FftPfa {
 
   private static _pfa2a(n1: number, z: number[][], m: number, j0: number, j1: number) {
     let m1 = 2 * n1;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       for (let i1 = 0; i1 < m1; i1 += 2) {
@@ -1732,12 +1752,12 @@ export class FftPfa {
                         j0: number, j1: number, j2: number) {
     let m1 = 2 * n1;
     let c1;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P866;
     } else {
       c1 = -this._P866;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -1766,12 +1786,12 @@ export class FftPfa {
                         j0: number, j1: number, j2: number, j3: number) {
     let m1 = 2 * n1;
     let c1;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._PONE;
     } else {
       c1 = -this._PONE;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -1806,15 +1826,15 @@ export class FftPfa {
                         j0: number, j1: number, j2: number, j3: number, j4: number) {
     let m1 = 2 * n1;
     let c1, c2, c3;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P559;
       c2 = this._P951;
       c3 = this._P587;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = -this._P559;
       c2 = this._P587;
       c3 = -this._P951;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._P559;
       c2 = -this._P587;
       c3 = this._P951;
@@ -1823,7 +1843,7 @@ export class FftPfa {
       c2 = -this._P951;
       c3 = -this._P587;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -1876,35 +1896,35 @@ export class FftPfa {
                         j0: number, j1: number, j2: number, j3: number, j4: number, j5: number, j6: number) {
     let m1 = 2 * n1;
     let c1, c2, c3, c4, c5, c6;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P623;
       c2 = -this._P222;
       c3 = -this._P900;
       c4 = this._P781;
       c5 = this._P974;
       c6 = this._P433;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = -this._P222;
       c2 = -this._P900;
       c3 = this._P623;
       c4 = this._P974;
       c5 = -this._P433;
       c6 = -this._P781;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._P900;
       c2 = this._P623;
       c3 = -this._P222;
       c4 = this._P433;
       c5 = -this._P781;
       c6 = this._P974;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = -this._P900;
       c2 = this._P623;
       c3 = -this._P222;
       c4 = -this._P433;
       c5 = this._P781;
       c6 = -this._P974;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P222;
       c2 = -this._P900;
       c3 = this._P623;
@@ -1919,7 +1939,7 @@ export class FftPfa {
       c5 = -this._P974;
       c6 = -this._P433;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -1988,13 +2008,13 @@ export class FftPfa {
                         j0: number, j1: number, j2: number, j3: number, j4: number, j5: number, j6: number, j7: number) {
     let m1 = 2 * n1;
     let c1, c2, c3;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._PONE;
       c2 = this._P707;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._PONE;
       c2 = -this._P707;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = this._PONE;
       c2 = -this._P707;
     } else {
@@ -2002,7 +2022,7 @@ export class FftPfa {
       c2 = this._P707;
     }
     c3 = c1 * c2;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -2081,31 +2101,31 @@ export class FftPfa {
                         j0: number, j1: number, j2: number, j3: number, j4: number, j5: number, j6: number, j7: number, j8: number) {
     let m1 = 2 * n1;
     let c1, c2, c3, c4, c5, c6, c7, c8, c9;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P866;
       c2 = this._P766;
       c3 = this._P642;
       c4 = this._P173;
       c5 = this._P984;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = -this._P866;
       c2 = this._P173;
       c3 = this._P984;
       c4 = -this._P939;
       c5 = this._P342;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = this._P866;
       c2 = -this._P939;
       c3 = this._P342;
       c4 = this._P766;
       c5 = -this._P642;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P866;
       c2 = -this._P939;
       c3 = -this._P342;
       c4 = this._P766;
       c5 = this._P642;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = this._P866;
       c2 = this._P173;
       c3 = -this._P984;
@@ -2122,7 +2142,7 @@ export class FftPfa {
     c7 = c1 * c3;
     c8 = c1 * c4;
     c9 = c1 * c5;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -2232,7 +2252,7 @@ export class FftPfa {
                          j6: number, j7: number, j8: number, j9: number, j10: number) {
     let m1 = 2 * n1;
     let c1, c2, c3, c4, c5, c6, c7, c8, c9, c10;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P841;
       c2 = this._P415;
       c3 = -this._P142;
@@ -2243,7 +2263,7 @@ export class FftPfa {
       c8 = this._P989;
       c9 = this._P755;
       c10 = this._P281;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = this._P415;
       c2 = -this._P654;
       c3 = -this._P959;
@@ -2254,7 +2274,7 @@ export class FftPfa {
       c8 = -this._P281;
       c9 = -this._P989;
       c10 = -this._P540;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._P142;
       c2 = -this._P959;
       c3 = this._P415;
@@ -2265,7 +2285,7 @@ export class FftPfa {
       c8 = -this._P909;
       c9 = this._P540;
       c10 = this._P755;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = -this._P654;
       c2 = -this._P142;
       c3 = this._P841;
@@ -2276,7 +2296,7 @@ export class FftPfa {
       c8 = this._P540;
       c9 = this._P281;
       c10 = -this._P909;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P959;
       c2 = this._P841;
       c3 = -this._P654;
@@ -2287,7 +2307,7 @@ export class FftPfa {
       c8 = this._P755;
       c9 = -this._P909;
       c10 = this._P989;
-    } else if (mu == 6) {
+    } else if (mu === 6) {
       c1 = -this._P959;
       c2 = this._P841;
       c3 = -this._P654;
@@ -2298,7 +2318,7 @@ export class FftPfa {
       c8 = -this._P755;
       c9 = this._P909;
       c10 = -this._P989;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = -this._P654;
       c2 = -this._P142;
       c3 = this._P841;
@@ -2309,7 +2329,7 @@ export class FftPfa {
       c8 = -this._P540;
       c9 = -this._P281;
       c10 = this._P909;
-    } else if (mu == 8) {
+    } else if (mu === 8) {
       c1 = -this._P142;
       c2 = -this._P959;
       c3 = this._P415;
@@ -2320,7 +2340,7 @@ export class FftPfa {
       c8 = this._P909;
       c9 = -this._P540;
       c10 = -this._P755;
-    } else if (mu == 9) {
+    } else if (mu === 9) {
       c1 = this._P415;
       c2 = -this._P654;
       c3 = -this._P959;
@@ -2343,7 +2363,7 @@ export class FftPfa {
       c9 = -this._P755;
       c10 = -this._P281;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -2449,7 +2469,7 @@ export class FftPfa {
                          j7: number, j8: number, j9: number, j10: number, j11: number, j12: number) {
     let m1 = 2 * n1;
     let c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P885;
       c2 = this._P568;
       c3 = this._P120;
@@ -2462,7 +2482,7 @@ export class FftPfa {
       c10 = this._P935;
       c11 = this._P663;
       c12 = this._P239;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = this._P568;
       c2 = -this._P354;
       c3 = -this._P970;
@@ -2475,7 +2495,7 @@ export class FftPfa {
       c10 = -this._P663;
       c11 = -this._P992;
       c12 = -this._P464;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = this._P120;
       c2 = -this._P970;
       c3 = -this._P354;
@@ -2488,7 +2508,7 @@ export class FftPfa {
       c10 = -this._P464;
       c11 = this._P822;
       c12 = this._P663;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = -this._P354;
       c2 = -this._P748;
       c3 = this._P885;
@@ -2501,7 +2521,7 @@ export class FftPfa {
       c10 = this._P992;
       c11 = -this._P239;
       c12 = -this._P822;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P748;
       c2 = this._P120;
       c3 = this._P568;
@@ -2514,7 +2534,7 @@ export class FftPfa {
       c10 = -this._P239;
       c11 = -this._P464;
       c12 = this._P935;
-    } else if (mu == 6) {
+    } else if (mu === 6) {
       c1 = -this._P970;
       c2 = this._P885;
       c3 = -this._P748;
@@ -2527,7 +2547,7 @@ export class FftPfa {
       c10 = -this._P822;
       c11 = this._P935;
       c12 = -this._P992;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = -this._P970;
       c2 = this._P885;
       c3 = -this._P748;
@@ -2540,7 +2560,7 @@ export class FftPfa {
       c10 = this._P822;
       c11 = -this._P935;
       c12 = this._P992;
-    } else if (mu == 8) {
+    } else if (mu === 8) {
       c1 = -this._P748;
       c2 = this._P120;
       c3 = this._P568;
@@ -2553,7 +2573,7 @@ export class FftPfa {
       c10 = this._P239;
       c11 = this._P464;
       c12 = -this._P935;
-    } else if (mu == 9) {
+    } else if (mu === 9) {
       c1 = -this._P354;
       c2 = -this._P748;
       c3 = this._P885;
@@ -2566,7 +2586,7 @@ export class FftPfa {
       c10 = -this._P992;
       c11 = this._P239;
       c12 = this._P822;
-    } else if (mu == 10) {
+    } else if (mu === 10) {
       c1 = this._P120;
       c2 = -this._P970;
       c3 = -this._P354;
@@ -2579,7 +2599,7 @@ export class FftPfa {
       c10 = this._P464;
       c11 = -this._P822;
       c12 = -this._P663;
-    } else if (mu == 11) {
+    } else if (mu === 11) {
       c1 = this._P568;
       c2 = -this._P354;
       c3 = -this._P970;
@@ -2606,7 +2626,7 @@ export class FftPfa {
       c11 = -this._P663;
       c12 = -this._P239;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -2730,37 +2750,37 @@ export class FftPfa {
                          j9: number, j10: number, j11: number, j12: number, j13: number, j14: number, j15: number) {
     let m1 = 2 * n1;
     let c1, c2, c3, c4, c5, c6, c7;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._PONE;
       c2 = this._P923;
       c3 = this._P382;
       c4 = this._P707;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._PONE;
       c2 = this._P382;
       c3 = this._P923;
       c4 = -this._P707;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = this._PONE;
       c2 = -this._P382;
       c3 = this._P923;
       c4 = -this._P707;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = -this._PONE;
       c2 = -this._P923;
       c3 = this._P382;
       c4 = this._P707;
-    } else if (mu == 9) {
+    } else if (mu === 9) {
       c1 = this._PONE;
       c2 = -this._P923;
       c3 = -this._P382;
       c4 = this._P707;
-    } else if (mu == 11) {
+    } else if (mu === 11) {
       c1 = -this._PONE;
       c2 = -this._P382;
       c3 = -this._P923;
       c4 = -this._P707;
-    } else if (mu == 13) {
+    } else if (mu === 13) {
       c1 = this._PONE;
       c2 = this._P382;
       c3 = -this._P923;
@@ -2774,7 +2794,7 @@ export class FftPfa {
     c5 = c1 * c4;
     c6 = c1 * c3;
     c7 = c1 * c2;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0: number[] = z[j0];
       let zj1: number[] = z[j1];
       let zj2: number[] = z[j2];
@@ -2958,12 +2978,12 @@ export class FftPfa {
   }
 
   private static _pfa2b(n1: number, z: number[][], m: number, j0: number, j1: number) {
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r: number[] = z[j0];
       let zj0i: number[] = z[j0 + 1];
       let zj1r: number[] = z[j1];
       let zj1i: number[] = z[j1 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj0r[i1] - zj1r[i1];
         let t1i = zj0i[i1] - zj1i[i1];
         zj0r[i1] = zj0r[i1] + zj1r[i1];
@@ -2980,19 +3000,19 @@ export class FftPfa {
   private static _pfa3b(n1: number, z: number[][], mu: number, m: number,
                         j0: number, j1: number, j2: number) {
     let c1;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P866;
     } else {
       c1 = -this._P866;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r = z[j0];
       let zj0i = z[j0 + 1];
       let zj1r = z[j1];
       let zj1i = z[j1 + 1];
       let zj2r = z[j2];
       let zj2i = z[j2 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj1r[i1] + zj2r[i1];
         let t1i = zj1i[i1] + zj2i[i1];
         let y1r = zj0r[i1] - 0.5 * t1r;
@@ -3016,12 +3036,12 @@ export class FftPfa {
   private static _pfa4b(n1: number, z: number[][], mu: number, m: number,
                         j0: number, j1: number, j2: number, j3: number) {
     let c1;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._PONE;
     } else {
       c1 = -this._PONE;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r = z[j0];
       let zj0i = z[j0 + 1];
       let zj1r = z[j1];
@@ -3030,7 +3050,7 @@ export class FftPfa {
       let zj2i = z[j2 + 1];
       let zj3r = z[j3];
       let zj3i = z[j3 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj0r[i1] + zj2r[i1];
         let t1i = zj0i[i1] + zj2i[i1];
         let t2r = zj1r[i1] + zj3r[i1];
@@ -3059,15 +3079,15 @@ export class FftPfa {
   private static _pfa5b(n1: number, z: number[][], mu: number, m: number,
                         j0: number, j1: number, j2: number, j3: number, j4: number) {
     let c1, c2, c3;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P559;
       c2 = this._P951;
       c3 = this._P587;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = -this._P559;
       c2 = this._P587;
       c3 = -this._P951;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._P559;
       c2 = -this._P587;
       c3 = this._P951;
@@ -3076,7 +3096,7 @@ export class FftPfa {
       c2 = -this._P951;
       c3 = -this._P587;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r = z[j0];
       let zj0i = z[j0 + 1];
       let zj1r = z[j1];
@@ -3087,7 +3107,7 @@ export class FftPfa {
       let zj3i = z[j3 + 1];
       let zj4r = z[j4];
       let zj4i = z[j4 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj1r[i1] + zj4r[i1];
         let t1i = zj1i[i1] + zj4i[i1];
         let t2r = zj2r[i1] + zj3r[i1];
@@ -3133,35 +3153,35 @@ export class FftPfa {
   private static _pfa7b(n1: number, z: number[][], mu: number, m: number,
                         j0: number, j1: number, j2: number, j3: number, j4: number, j5: number, j6: number) {
     let c1, c2, c3, c4, c5, c6;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P623;
       c2 = -this._P222;
       c3 = -this._P900;
       c4 = this._P781;
       c5 = this._P974;
       c6 = this._P433;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = -this._P222;
       c2 = -this._P900;
       c3 = this._P623;
       c4 = this._P974;
       c5 = -this._P433;
       c6 = -this._P781;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._P900;
       c2 = this._P623;
       c3 = -this._P222;
       c4 = this._P433;
       c5 = -this._P781;
       c6 = this._P974;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = -this._P900;
       c2 = this._P623;
       c3 = -this._P222;
       c4 = -this._P433;
       c5 = this._P781;
       c6 = -this._P974;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P222;
       c2 = -this._P900;
       c3 = this._P623;
@@ -3176,7 +3196,7 @@ export class FftPfa {
       c5 = -this._P974;
       c6 = -this._P433;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r = z[j0];
       let zj0i = z[j0 + 1];
       let zj1r = z[j1];
@@ -3191,7 +3211,7 @@ export class FftPfa {
       let zj5i = z[j5 + 1];
       let zj6r = z[j6];
       let zj6i = z[j6 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj1r[i1] + zj6r[i1];
         let t1i = zj1i[i1] + zj6i[i1];
         let t2r = zj2r[i1] + zj5r[i1];
@@ -3251,13 +3271,13 @@ export class FftPfa {
   private static _pfa8b(n1: number, z: number[][], mu: number, m: number,
                         j0: number, j1: number, j2: number, j3: number, j4: number, j5: number, j6: number, j7: number) {
     let c1, c2, c3;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._PONE;
       c2 = this._P707;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._PONE;
       c2 = -this._P707;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = this._PONE;
       c2 = -this._P707;
     } else {
@@ -3265,7 +3285,7 @@ export class FftPfa {
       c2 = this._P707;
     }
     c3 = c1 * c2;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r = z[j0];
       let zj0i = z[j0 + 1];
       let zj1r = z[j1];
@@ -3282,7 +3302,7 @@ export class FftPfa {
       let zj6i = z[j6 + 1];
       let zj7r = z[j7];
       let zj7i = z[j7 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj0r[i1] + zj4r[i1];
         let t1i = zj0i[i1] + zj4i[i1];
         let t2r = zj0r[i1] - zj4r[i1];
@@ -3351,31 +3371,31 @@ export class FftPfa {
   private static _pfa9b(n1: number, z: number[][], mu: number, m: number,
                         j0: number, j1: number, j2: number, j3: number, j4: number, j5: number, j6: number, j7: number, j8: number) {
     let c1, c2, c3, c4, c5, c6, c7, c8, c9;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P866;
       c2 = this._P766;
       c3 = this._P642;
       c4 = this._P173;
       c5 = this._P984;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = -this._P866;
       c2 = this._P173;
       c3 = this._P984;
       c4 = -this._P939;
       c5 = this._P342;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = this._P866;
       c2 = -this._P939;
       c3 = this._P342;
       c4 = this._P766;
       c5 = -this._P642;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P866;
       c2 = -this._P939;
       c3 = -this._P342;
       c4 = this._P766;
       c5 = this._P642;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = this._P866;
       c2 = this._P173;
       c3 = -this._P984;
@@ -3392,7 +3412,7 @@ export class FftPfa {
     c7 = c1 * c3;
     c8 = c1 * c4;
     c9 = c1 * c5;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r = z[j0];
       let zj0i = z[j0 + 1];
       let zj1r = z[j1];
@@ -3411,7 +3431,7 @@ export class FftPfa {
       let zj7i = z[j7 + 1];
       let zj8r = z[j8];
       let zj8i = z[j8 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj3r[i1] + zj6r[i1];
         let t1i = zj3i[i1] + zj6i[i1];
         let t2r = zj0r[i1] - 0.5 * t1r;
@@ -3510,7 +3530,7 @@ export class FftPfa {
                          j0: number, j1: number, j2: number, j3: number, j4: number, j5: number,
                          j6: number, j7: number, j8: number, j9: number, j10: number) {
     let c1, c2, c3, c4, c5, c6, c7, c8, c9, c10;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P841;
       c2 = this._P415;
       c3 = -this._P142;
@@ -3521,7 +3541,7 @@ export class FftPfa {
       c8 = this._P989;
       c9 = this._P755;
       c10 = this._P281;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = this._P415;
       c2 = -this._P654;
       c3 = -this._P959;
@@ -3532,7 +3552,7 @@ export class FftPfa {
       c8 = -this._P281;
       c9 = -this._P989;
       c10 = -this._P540;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._P142;
       c2 = -this._P959;
       c3 = this._P415;
@@ -3543,7 +3563,7 @@ export class FftPfa {
       c8 = -this._P909;
       c9 = this._P540;
       c10 = this._P755;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = -this._P654;
       c2 = -this._P142;
       c3 = this._P841;
@@ -3554,7 +3574,7 @@ export class FftPfa {
       c8 = this._P540;
       c9 = this._P281;
       c10 = -this._P909;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P959;
       c2 = this._P841;
       c3 = -this._P654;
@@ -3565,7 +3585,7 @@ export class FftPfa {
       c8 = this._P755;
       c9 = -this._P909;
       c10 = this._P989;
-    } else if (mu == 6) {
+    } else if (mu === 6) {
       c1 = -this._P959;
       c2 = this._P841;
       c3 = -this._P654;
@@ -3576,7 +3596,7 @@ export class FftPfa {
       c8 = -this._P755;
       c9 = this._P909;
       c10 = -this._P989;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = -this._P654;
       c2 = -this._P142;
       c3 = this._P841;
@@ -3587,7 +3607,7 @@ export class FftPfa {
       c8 = -this._P540;
       c9 = -this._P281;
       c10 = this._P909;
-    } else if (mu == 8) {
+    } else if (mu === 8) {
       c1 = -this._P142;
       c2 = -this._P959;
       c3 = this._P415;
@@ -3598,7 +3618,7 @@ export class FftPfa {
       c8 = this._P909;
       c9 = -this._P540;
       c10 = -this._P755;
-    } else if (mu == 9) {
+    } else if (mu === 9) {
       c1 = this._P415;
       c2 = -this._P654;
       c3 = -this._P959;
@@ -3621,7 +3641,7 @@ export class FftPfa {
       c9 = -this._P755;
       c10 = -this._P281;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r = z[j0];
       let zj0i = z[j0 + 1];
       let zj1r = z[j1];
@@ -3644,7 +3664,7 @@ export class FftPfa {
       let zj9i = z[j9 + 1];
       let zj10r = z[j10];
       let zj10i = z[j10 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj1r[i1] + zj10r[i1];
         let t1i = zj1i[i1] + zj10i[i1];
         let t2r = zj2r[i1] + zj9r[i1];
@@ -3737,7 +3757,7 @@ export class FftPfa {
                          j0: number, j1: number, j2: number, j3: number, j4: number, j5: number, j6: number,
                          j7: number, j8: number, j9: number, j10: number, j11: number, j12: number) {
     let c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._P885;
       c2 = this._P568;
       c3 = this._P120;
@@ -3750,7 +3770,7 @@ export class FftPfa {
       c10 = this._P935;
       c11 = this._P663;
       c12 = this._P239;
-    } else if (mu == 2) {
+    } else if (mu === 2) {
       c1 = this._P568;
       c2 = -this._P354;
       c3 = -this._P970;
@@ -3763,7 +3783,7 @@ export class FftPfa {
       c10 = -this._P663;
       c11 = -this._P992;
       c12 = -this._P464;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = this._P120;
       c2 = -this._P970;
       c3 = -this._P354;
@@ -3776,7 +3796,7 @@ export class FftPfa {
       c10 = -this._P464;
       c11 = this._P822;
       c12 = this._P663;
-    } else if (mu == 4) {
+    } else if (mu === 4) {
       c1 = -this._P354;
       c2 = -this._P748;
       c3 = this._P885;
@@ -3789,7 +3809,7 @@ export class FftPfa {
       c10 = this._P992;
       c11 = -this._P239;
       c12 = -this._P822;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = -this._P748;
       c2 = this._P120;
       c3 = this._P568;
@@ -3802,7 +3822,7 @@ export class FftPfa {
       c10 = -this._P239;
       c11 = -this._P464;
       c12 = this._P935;
-    } else if (mu == 6) {
+    } else if (mu === 6) {
       c1 = -this._P970;
       c2 = this._P885;
       c3 = -this._P748;
@@ -3815,7 +3835,7 @@ export class FftPfa {
       c10 = -this._P822;
       c11 = this._P935;
       c12 = -this._P992;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = -this._P970;
       c2 = this._P885;
       c3 = -this._P748;
@@ -3828,7 +3848,7 @@ export class FftPfa {
       c10 = this._P822;
       c11 = -this._P935;
       c12 = this._P992;
-    } else if (mu == 8) {
+    } else if (mu === 8) {
       c1 = -this._P748;
       c2 = this._P120;
       c3 = this._P568;
@@ -3841,7 +3861,7 @@ export class FftPfa {
       c10 = this._P239;
       c11 = this._P464;
       c12 = -this._P935;
-    } else if (mu == 9) {
+    } else if (mu === 9) {
       c1 = -this._P354;
       c2 = -this._P748;
       c3 = this._P885;
@@ -3854,7 +3874,7 @@ export class FftPfa {
       c10 = -this._P992;
       c11 = this._P239;
       c12 = this._P822;
-    } else if (mu == 10) {
+    } else if (mu === 10) {
       c1 = this._P120;
       c2 = -this._P970;
       c3 = -this._P354;
@@ -3867,7 +3887,7 @@ export class FftPfa {
       c10 = this._P464;
       c11 = -this._P822;
       c12 = -this._P663;
-    } else if (mu == 11) {
+    } else if (mu === 11) {
       c1 = this._P568;
       c2 = -this._P354;
       c3 = -this._P970;
@@ -3894,7 +3914,7 @@ export class FftPfa {
       c11 = -this._P663;
       c12 = -this._P239;
     }
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r = z[j0];
       let zj0i = z[j0 + 1];
       let zj1r = z[j1];
@@ -3921,7 +3941,7 @@ export class FftPfa {
       let zj11i = z[j11 + 1];
       let zj12r = z[j12];
       let zj12i = z[j12 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj1r[i1] + zj12r[i1];
         let t1i = zj1i[i1] + zj12i[i1];
         let t2r = zj2r[i1] + zj11r[i1];
@@ -4030,37 +4050,37 @@ export class FftPfa {
                          j0: number, j1: number, j2: number, j3: number, j4: number, j5: number, j6: number, j7: number, j8: number,
                          j9: number, j10: number, j11: number, j12: number, j13: number, j14: number, j15: number) {
     let c1, c2, c3, c4, c5, c6, c7;
-    if (mu == 1) {
+    if (mu === 1) {
       c1 = this._PONE;
       c2 = this._P923;
       c3 = this._P382;
       c4 = this._P707;
-    } else if (mu == 3) {
+    } else if (mu === 3) {
       c1 = -this._PONE;
       c2 = this._P382;
       c3 = this._P923;
       c4 = -this._P707;
-    } else if (mu == 5) {
+    } else if (mu === 5) {
       c1 = this._PONE;
       c2 = -this._P382;
       c3 = this._P923;
       c4 = -this._P707;
-    } else if (mu == 7) {
+    } else if (mu === 7) {
       c1 = -this._PONE;
       c2 = -this._P923;
       c3 = this._P382;
       c4 = this._P707;
-    } else if (mu == 9) {
+    } else if (mu === 9) {
       c1 = this._PONE;
       c2 = -this._P923;
       c3 = -this._P382;
       c4 = this._P707;
-    } else if (mu == 11) {
+    } else if (mu === 11) {
       c1 = -this._PONE;
       c2 = -this._P382;
       c3 = -this._P923;
       c4 = -this._P707;
-    } else if (mu == 13) {
+    } else if (mu === 13) {
       c1 = this._PONE;
       c2 = this._P382;
       c3 = -this._P923;
@@ -4074,7 +4094,7 @@ export class FftPfa {
     c5 = c1 * c4;
     c6 = c1 * c3;
     c7 = c1 * c2;
-    for (let i = 0; i < m; ++i) {
+    for (let i = 0; i < m; i++) {
       let zj0r: number[] = z[j0];
       let zj0i: number[] = z[j0 + 1];
       let zj1r: number[] = z[j1];
@@ -4107,7 +4127,7 @@ export class FftPfa {
       let zj14i: number[] = z[j14 + 1];
       let zj15r: number[] = z[j15];
       let zj15i: number[] = z[j15 + 1];
-      for (let i1 = 0; i1 < n1; ++i1) {
+      for (let i1 = 0; i1 < n1; i1++) {
         let t1r = zj0r[i1] + zj8r[i1];
         let t1i = zj0i[i1] + zj8i[i1];
         let t2r = zj4r[i1] + zj12r[i1];

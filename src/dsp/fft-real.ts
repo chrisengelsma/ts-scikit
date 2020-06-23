@@ -1,4 +1,4 @@
-import { Check } from '../utils';
+import { arrayDimensions, Check } from '../utils';
 import { FftPfa } from './fft-pfa';
 
 /**
@@ -77,25 +77,33 @@ export class FftReal {
   private static _checkArray(a: number[][], name: string, n1: number, n2: number);
   private static _checkArray(a: number[][][], name: string, n1: number, n2: number, n3: number);
   private static _checkArray(a: number[] | number[][] | number[][][], name: string, n1: number, n2?: number, n3?: number): void {
-    if (a[0] instanceof Array) {
-      if (a[0][0] instanceof Array) {
-        let ok = a.length >= n3;
+    let ok;
+    switch (arrayDimensions(a)) {
+      case 1:
+        a = a as number[];
+
+        Check.argument(a.length >= n1, `dimensions of ${ name } are valid`);
+        break;
+      case 2:
+        a = a as number[][];
+
+        ok = a.length >= n2;
+        for (let i2 = 0; i2 < n2 && ok; ++i2) {
+          ok = a[i2].length >= n1;
+        }
+        Check.argument(ok, `dimensions of ${ name } are valid`);
+        break;
+      default:
+        a = a as number[][][];
+
+        ok = a.length >= n3;
         for (let i3 = 0; i3 < n3 && ok; ++i3) {
-          ok = ( a[i3] as number[][] ).length >= n2;
+          ok = a[i3].length >= n2;
           for (let i2 = 0; i2 < n2 && ok; ++i2) {
-            ok = ( a[i3][i2] as number[] ).length >= n1;
+            ok = a[i3][i2].length >= n1;
           }
         }
         Check.argument(ok, `dimensions of ${ name } are valid`);
-      } else {
-        let ok = a.length >= n2;
-        for (let i2 = 0; i2 < n2 && ok; ++i2) {
-          ok = ( a[i2] as number[] ).length >= n1;
-        }
-        Check.argument(ok, `dimensions of ${ name } are valid`);
-      }
-    } else {
-      Check.argument(a.length >= n1, `dimensions of ${ name } are valid`);
     }
   }
 
@@ -109,7 +117,7 @@ export class FftReal {
    */
   constructor(nfft: number) {
     Check.argument(
-      nfft % 2 === 0 && FftPfa.IsValidNFFT(nfft),
+      nfft % 2 === 0 && FftPfa.IsValidNFFT(Math.floor(nfft / 2)),
       'nfft = ' + nfft + ' is valid FFT length');
     this._nfft = nfft;
   }
@@ -132,37 +140,38 @@ export class FftReal {
     FftReal._checkSign(sign);
     FftReal._checkArray(rx, 'rx', this._nfft);
     FftReal._checkArray(cy, 'cy', this._nfft + 2);
+    const nfft = this._nfft;
 
-    let n = this._nfft;
+    let n = nfft;
     while (--n >= 0) { cy[n] = 0.5 * rx[n]; }
 
-    FftPfa.Transform(sign, this._nfft / 2, cy);
+    FftPfa.Transform(sign, Math.floor(nfft / 2), cy);
 
-    cy[this._nfft] = 2.0 * ( cy[0] - cy[1] );
+    cy[nfft] = 2.0 * ( cy[0] - cy[1] );
     cy[0] = 2.0 * ( cy[0] + cy[1] );
-    cy[this._nfft + 1] = 0.0;
+    cy[nfft + 1] = 0.0;
     cy[1] = 0.0;
 
-    const theta = sign * 2.0 * Math.PI / this._nfft;
+    const theta = sign * 2.0 * Math.PI / nfft;
     let wt = Math.sin(0.5 * theta);
     const wpr = -2.0 * wt * wt;
     const wpi = Math.sin(theta);
-    let wr = 1.0 - wpr;
+    let wr = 1.0 + wpr;
     let wi = wpi;
 
     let sumr, sumi, difr, difi, tmpr, tmpi;
 
-    for (let j = 0, k = this._nfft - 1; j <= k; j += 2, k -= 2) {
-      sumr = cy[j] + cy[k];
+    for (let j = 2, k = nfft - 2; j <= k; j += 2, k -= 2) {
+      sumr = cy[j    ] + cy[k    ];
       sumi = cy[j + 1] + cy[k + 1];
-      difr = cy[j] - cy[k];
+      difr = cy[j    ] - cy[k    ];
       difi = cy[j + 1] - cy[k + 1];
       tmpr = wi * difr + wr * sumi;
       tmpi = wi * sumi - wr * difr;
 
-      cy[j] = sumr + tmpr;
+      cy[j    ] = sumr + tmpr;
       cy[j + 1] = tmpi + difi;
-      cy[k] = sumr - tmpr;
+      cy[k    ] = sumr - tmpr;
       cy[k + 1] = tmpi - difi;
       wt = wr;
       wr += wr * wpr - wi * wpi;
@@ -183,15 +192,16 @@ export class FftReal {
     FftReal._checkSign(sign);
     FftReal._checkArray(cx, 'cx', this._nfft + 2);
     FftReal._checkArray(ry, 'ry', this._nfft);
+    const nfft = this._nfft;
 
     if (cx !== ry) {
-      let n = this._nfft;
+      let n = nfft;
       while (--n >= 2) { ry[n] = cx[n]; }
     }
 
-    ry[1] = cx[0] - cx[this._nfft];
-    ry[0] = cx[0] + cx[this._nfft];
-    const theta = -sign * 2.0 * Math.PI / this._nfft;
+    ry[1] = cx[0] - cx[nfft];
+    ry[0] = cx[0] + cx[nfft];
+    const theta = -sign * 2.0 * Math.PI / nfft;
     let wt = Math.sin(0.5 * theta);
     let wpr = -2.0 * wt * wt;  // = cos(theta) - 1, with less rounding error
     let wpi = Math.sin(theta); // = sin(theta)
@@ -200,22 +210,23 @@ export class FftReal {
 
     let sumr, sumi, difr, difi, tmpr, tmpi;
 
-    for (let j = 2, k = this._nfft - 2; j <= k; j += 2, k += 2) {
-      sumr = ry[j] + ry[k];
+    for (let j = 2, k = nfft - 2; j <= k; j += 2, k -= 2) {
+      sumr = ry[j    ] + ry[k    ];
       sumi = ry[j + 1] + ry[k + 1];
-      difr = ry[j] - ry[k];
+      difr = ry[j    ] - ry[k    ];
       difi = ry[j + 1] - ry[k + 1];
       tmpr = wi * difr - wr * sumi;
       tmpi = wi * sumi + wr * difr;
-      ry[j] = sumr + tmpr;
+
+      ry[j    ] = sumr + tmpr;
       ry[j + 1] = tmpi + difi;
-      ry[k] = sumr - tmpr;
+      ry[k    ] = sumr - tmpr;
       ry[k + 1] = tmpi - difi;
       wt = wr;
       wr += wr * wpr - wi * wpi;
       wi += wi * wpr + wt * wpi;
     }
-    FftPfa.Transform(sign, this._nfft / 2, ry);
+    FftPfa.Transform(sign, Math.floor(nfft / 2), ry);
   }
 
   /**
@@ -473,18 +484,20 @@ export class FftReal {
   scale(rx: number[][][], n1: number, n2: number, n3: number): void;
 
   scale(rx: number[] | number[][] | number[][][], n1: number, n2?: number, n3?: number): void {
-    if (rx[0] instanceof Array) {
-      if (rx[0][0] instanceof Array) {
-        rx = rx as number[][][];
-        for (let i3 = 0; i3 < n3; ++i3) { this.scale(rx[i3], n1, n2); }
-      } else {
+    const dim = arrayDimensions(rx);
+    switch (dim) {
+      case 1:
+        rx = rx as number[];
+        const s = 1.0 / this._nfft;
+        while (--n1 >= 0) { rx[n1] *= s; }
+        break;
+      case 2:
         rx = rx as number[][];
         for (let i2 = 0; i2 < n2; ++i2) { this.scale(rx[i2], n1); }
-      }
-    } else {
-      rx = rx as number[];
-      const s = 1.0 / this._nfft;
-      while (--n1 >= 0) { rx[n1] *= s; }
+        break;
+      default:
+        rx = rx as number[][][];
+        for (let i3 = 0; i3 < n3; ++i3) { this.scale(rx[i3], n1, n2); }
     }
   }
 }
