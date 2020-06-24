@@ -6,6 +6,7 @@ import { arrayDimensions, ccopy, Check, copy } from '../utils';
 /**
  * An easy-to-use fast Fourier transform.
  * <p>
+ * <em>WARNING: NOT YET TESTED!</em>
  * This class is less flexible than {@link FftComplex} and {@link FftReal}.
  * For example, the user has less control over the sampling of frequency.
  * However, for many applications this class may be simpler to use.
