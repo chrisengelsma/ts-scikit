@@ -1,6 +1,6 @@
 {
   "name": "ts-scikit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A scientific toolkit written in Typescript",
   "author": "Chris Engelsma <chris.engelsma@gmail.com>",
   "main": "index.js",
