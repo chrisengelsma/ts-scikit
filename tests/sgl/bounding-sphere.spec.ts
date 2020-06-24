@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { BoundingBox, BoundingSphere, Point3 } from '../../src/maths';
+import { BoundingBox, BoundingSphere, Point3 } from '../../src/sgl';
 
 describe('BoundingSphere', () => {
 

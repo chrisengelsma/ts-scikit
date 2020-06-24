@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Point3, Point4, Vector3 } from '../../src/maths';
+import { Point3, Point4, Vector3 } from '../../src/sgl';
 
 describe('Point4', () => {
 

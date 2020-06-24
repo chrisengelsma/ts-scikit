@@ -1,7 +1,7 @@
 import { Matrix44 } from './matrix44';
 import { Vector3 } from './vector3';
 import { Tuple4 } from './tuple4';
-import { MathsUtils } from '../utils';
+import { cosFromSin } from '../utils';
 
 /**
  * A quaternion.
@@ -22,9 +22,9 @@ export class Quaternion extends Tuple4 {
     const sy = Math.sin(angleY * 0.5);
     const sz = Math.sin(angleZ * 0.5);
 
-    const cx = MathsUtils.cosFromSin(sx, angleX * 0.5);
-    const cy = MathsUtils.cosFromSin(sy, angleY * 0.5);
-    const cz = MathsUtils.cosFromSin(sz, angleZ * 0.5);
+    const cx = cosFromSin(sx, angleX * 0.5);
+    const cy = cosFromSin(sy, angleY * 0.5);
+    const cz = cosFromSin(sz, angleZ * 0.5);
 
     const cycz = cy * cz;
     const sysz = sy * sz;

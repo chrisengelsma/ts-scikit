@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Matrix44 } from '../../src/maths';
+import { Matrix44 } from '../../src/sgl';
 
-const randomArray = (): Array<number> => {
+const randomArray = (): number[] => {
   // @ts-ignore
   return Array.from({ length: 16 }, () => Math.floor(Math.random() * 40));
 };

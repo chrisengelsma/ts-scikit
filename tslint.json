@@ -10,6 +10,7 @@
       "single"
     ],
     "variable-name": false,
+    "unified-signatures": false,
     "prefer-const": true,
     "one-variable-per-declaration": false,
     "max-line-length": false,

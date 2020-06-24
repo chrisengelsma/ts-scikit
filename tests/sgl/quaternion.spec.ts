@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Matrix44, Quaternion, Vector3 } from '../../src/maths';
+import { Matrix44, Quaternion, Vector3 } from '../../src/sgl';
 
 describe('Quaternion', () => {
 

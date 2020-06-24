@@ -81,7 +81,7 @@ describe('Unit Sphere Sampling', () => {
       expect(p[2] === -q[2]).to.be.true;
     }
 
-    const npoint = 10000;
+    const npoint = 1000;
     for (let ipoint = 0; ipoint < npoint; ++ipoint) {
       const p: number[] = randomPoint();
       const q: number[] = [ -p[0], -p[1], -p[2] ];
@@ -113,7 +113,7 @@ describe('Unit Sphere Sampling', () => {
     // Interpolate and track errors
     let emax: number = 0.0;
     let pmax: number[] = null;
-    const npoint = 10000;
+    const npoint = 1000;
     for (let ipoint = 0; ipoint < npoint; ++ipoint) {
       const p: number[] = randomPoint();
 
@@ -151,7 +151,7 @@ describe('Unit Sphere Sampling', () => {
 
   it('should compute triangle', () => {
     const uss = this.uss;
-    const npoint = 10000;
+    const npoint = 1000;
     for (let ipoint = 0; ipoint < npoint; ++ipoint) {
       const p: number[] = randomPoint();
       const i: number = uss.getIndex(p);

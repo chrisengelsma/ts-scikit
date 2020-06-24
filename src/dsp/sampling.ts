@@ -1,4 +1,4 @@
-import { Check, MathsUtils } from '../utils';
+import { Check, almostEqual } from '../utils';
 
 export class Sampling {
 
@@ -39,7 +39,7 @@ export class Sampling {
   /**
    * The last value of this sampling.
    */
-  get last(): number { return this._f + (this._n - 1) * this._d; }
+  get last(): number { return this._f + ( this._n - 1 ) * this._d; }
 
   /**
    * Gets the value v[i] of this sampling at a given index.
@@ -73,8 +73,8 @@ export class Sampling {
    */
   indexOf(x: number): number {
     let i = -1;
-    const j = Math.floor(Math.round((x - this._f) / this._d));
-    if (0 <= j && j < this.count && MathsUtils.almostEqual(x, this._f + j * this._d, this._td)) {
+    const j = Math.floor(Math.round(( x - this._f ) / this._d));
+    if (0 <= j && j < this.count && almostEqual(x, this._f + j * this._d, this._td)) {
       i = j;
     }
     return i;
@@ -86,7 +86,7 @@ export class Sampling {
    * @returns the index of the nearest sample.
    */
   indexOfNearest(x: number): number {
-    let i = Math.round((x - this._f) / this._d);
+    let i = Math.round(( x - this._f ) / this._d);
     if (i < 0) { i = 0; }
     if (i >= this._n) { i = this._n - 1; }
     return i;
@@ -171,7 +171,7 @@ export class Sampling {
   decimate(m: number): Sampling {
     Check.argument(Math.floor(m) === m, 'm is an integer');
     Check.argument(m > 0, 'm > 0');
-    const n = 1 + (this._n - 1) / m;
+    const n = 1 + ( this._n - 1 ) / m;
     return new Sampling(n, m * this._d, this._f, this._t);
   }
 
@@ -188,7 +188,7 @@ export class Sampling {
   interpolate(m: number): Sampling {
     Check.argument(Math.floor(m) === m, 'm is an integer');
     Check.argument(m > 0, 'm > 0');
-    const n = this._n + (this._n - 1) * (m - 1);
+    const n = this._n + ( this._n - 1 ) * ( m - 1 );
     return new Sampling(n, this._d / m, this._f, this._t);
   }
 }
