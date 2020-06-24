@@ -203,8 +203,8 @@ export class FftReal {
     ry[0] = cx[0] + cx[nfft];
     const theta = -sign * 2.0 * Math.PI / nfft;
     let wt = Math.sin(0.5 * theta);
-    let wpr = -2.0 * wt * wt;  // = cos(theta) - 1, with less rounding error
-    let wpi = Math.sin(theta); // = sin(theta)
+    const wpr = -2.0 * wt * wt;  // = cos(theta) - 1, with less rounding error
+    const wpi = Math.sin(theta); // = sin(theta)
     let wr = 1.0 + wpr;
     let wi = wpi;
 
@@ -365,15 +365,15 @@ export class FftReal {
 
     const theta = sign * 2.0 * Math.PI / this._nfft;
     let wt = Math.sin(0.5 * theta);
-    let wpr = -2.0 * wt * wt;  // = cos(theta) - 1, with less rounding error
-    let wpi = Math.sin(theta); // = sin(theta)
+    const wpr = -2.0 * wt * wt;  // = cos(theta) - 1, with less rounding error
+    const wpi = Math.sin(theta); // = sin(theta)
     let wr = 1.0 + wpr;
     let wi = wpi;
     let sumr, sumi, difr, difi, tmpr, tmpi;
 
     for (let j2 = 1, k2 = this._nfft / 2 - 1; j2 <= k2; ++j2, --k2) {
-      let cyj2: number[] = cy[j2];
-      let cyk2: number[] = cy[k2];
+      const cyj2: number[] = cy[j2];
+      const cyk2: number[] = cy[k2];
       for (let i1 = 0, j1 = 0; i1 < n1; ++i1, j1 += 2) {
         sumr = cyj2[j1] + cyk2[j1];
         sumi = cyj2[j1 + 1] + cyk2[j1 + 1];
@@ -410,8 +410,8 @@ export class FftReal {
     // Unpack complex input cx into real output ry. This is complicated
     // so that it works when input and output arrays are the same.
     for (let i1 = 0, j1 = 0; j1 < n1; i1 += 2, ++j1) {
-      let cx0 = cx[0][i1];
-      let cxn = cx[this._nfft / 2][i1];
+      const cx0 = cx[0][i1];
+      const cxn = cx[this._nfft / 2][i1];
       for (let i2 = this._nfft / 2 - 1, j2 = 2 * i2; i2 > 0; --i2, j2 -= 2) {
         ry[j2][j1] = cx[i2][i1];
         ry[j2 + 1][j1] = cx[i2][i1 + 1];
@@ -423,22 +423,22 @@ export class FftReal {
     // Begin transform.
     const theta = -sign * 2.0 * Math.PI / this._nfft;
     let wt = Math.sin(0.5 * theta);
-    let wpr = -2.0 * wt * wt;  // = cos(theta)-1, with less rounding error
-    let wpi = Math.sin(theta); // = sin(theta)
+    const wpr = -2.0 * wt * wt;  // = cos(theta)-1, with less rounding error
+    const wpi = Math.sin(theta); // = sin(theta)
     let wr = 1.0 + wpr;
     let wi = wpi;
     for (let j2 = 2, k2 = this._nfft - 2; j2 <= k2; j2 += 2, k2 -= 2) {
-      let ryj2r: number[] = ry[j2];
-      let ryj2i: number[] = ry[j2 + 1];
-      let ryk2r: number[] = ry[k2];
-      let ryk2i: number[] = ry[k2 + 1];
+      const ryj2r: number[] = ry[j2];
+      const ryj2i: number[] = ry[j2 + 1];
+      const ryk2r: number[] = ry[k2];
+      const ryk2i: number[] = ry[k2 + 1];
       for (let i1 = 0; i1 < n1; ++i1) {
-        let sumr = ryj2r[i1] + ryk2r[i1];
-        let sumi = ryj2i[i1] + ryk2i[i1];
-        let difr = ryj2r[i1] - ryk2r[i1];
-        let difi = ryj2i[i1] - ryk2i[i1];
-        let tmpr = wi * difr - wr * sumi;
-        let tmpi = wi * sumi + wr * difr;
+        const sumr = ryj2r[i1] + ryk2r[i1];
+        const sumi = ryj2i[i1] + ryk2i[i1];
+        const difr = ryj2r[i1] - ryk2r[i1];
+        const difi = ryj2i[i1] - ryk2i[i1];
+        const tmpr = wi * difr - wr * sumi;
+        const tmpi = wi * sumi + wr * difr;
         ryj2r[i1] = sumr + tmpr;
         ryj2i[i1] = tmpi + difi;
         ryk2r[i1] = sumr - tmpr;

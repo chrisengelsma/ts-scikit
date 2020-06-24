@@ -670,7 +670,7 @@ export class Fft {
   private _doCswap1(f: number[], n: number, i: number, j: number): void {
     let ir = 2 * i, ii = ir + 1;
     let jr = 2 * j, ji = jr + 1;
-    for (let k = 0; k < n; ++i, ir += 2, ii += 2, jr += 2, ji += 2) {
+    for (const k = 0; k < n; ++i, ir += 2, ii += 2, jr += 2, ji += 2) {
       const fir = f[ir];
       f[ir] = f[jr];
       f[jr] = fir;
@@ -736,8 +736,8 @@ export class Fft {
 
   /** @internal */
   private _doCrotateLeft1(f: number[], n: number, j: number): void {
-    let fjr = f[j * 2];
-    let fji = f[j * 2 + 1];
+    const fjr = f[j * 2];
+    const fji = f[j * 2 + 1];
     const i = j + 1;
     let ir = 2 * i;
     let ii = ir + 1;
@@ -796,7 +796,7 @@ export class Fft {
     const m = j + n - 1;
     const fmr = f[m * 2];
     const fmi = f[m * 2 + 1];
-    let i = m;
+    const i = m;
     let ir = 2 * i;
     let ii = ir + 1;
     for (let k = 1; k < n; ++k, ir -= 2, ii -= 2) {
@@ -1198,13 +1198,13 @@ export class Fft {
     const nk1 = ( this._complex ) ? this._nfft1 : this._nfft1 / 2 + 1;
     const nk2 = this._nfft2;
     const nk3 = this._nfft3;
-    let dp1 = sign1 * 2.0 * Math.PI * this._sk1.delta * fx1;
-    let dp2 = sign2 * 2.0 * Math.PI * this._sk2.delta * fx2;
-    let dp3 = sign3 * 2.0 * Math.PI * this._sk3.delta * fx3;
+    const dp1 = sign1 * 2.0 * Math.PI * this._sk1.delta * fx1;
+    const dp2 = sign2 * 2.0 * Math.PI * this._sk2.delta * fx2;
+    const dp3 = sign3 * 2.0 * Math.PI * this._sk3.delta * fx3;
     for (let i3 = 0; i3 < nk3; ++i3) {
       for (let i2 = 0; i2 < nk2; ++i2) {
         const p23 = i2 * dp2 + i3 * dp3;
-        let f32 = f[i3][i2];
+        const f32 = f[i3][i2];
         for (let i1 = 0, ir = 0, ii = 1; i1 < nk1; ++i1, ir += 2, ii += 2) {
           p = i1 * dp1 * p23;
           cosp = Math.cos(p);
@@ -1253,7 +1253,7 @@ export class Fft {
     if (!this._center2) { return; }
     const nk2 = this._sk2.count;
     const nfft2 = this._nfft2;
-    const even2 = nfft2 % 2 == 0;
+    const even2 = nfft2 % 2 === 0;
     if (even2) {
       // nfft even
       // 0 1 2 3 4 5 6 7 | 8
@@ -1355,7 +1355,7 @@ export class Fft {
   private _uncenter3(f: number[][][]): void {
     if (!this._center3) { return; }
     const nfft3 = this._nfft3;
-    const even3 = nfft3 % 2 == 0;
+    const even3 = nfft3 % 2 === 0;
     if (even3) {
       // nfft even
       // 4 5 6 7 0 1 2 3 | 8
