@@ -21,6 +21,15 @@ export class BoundingBox {
   }
 
   /**
+   * Constructs an infinite bounding box.
+   */
+  static AsInfinite() {
+    const bb: BoundingBox = new BoundingBox(0, 0, 0, 0, 0, 0);
+    bb.setInfinite();
+    return bb;
+  }
+
+  /**
    * Constructs a bounding box defined by two points.
    * The two points represent two of the eight corners of the box.
    * @param p a point.

@@ -105,7 +105,7 @@ export class BoundingSphere {
     } else if (b instanceof Array) {
       const n = b.length;
       if (n > 0) {
-        if (typeof n[0] === 'number') {
+        if (typeof b[0] === 'number') {
           const xyz: number[] = ( b as number[] );
           Check.argument(b.length % 3 === 0, 'number array length divisible by 3');
           for (let i = 0; i < n; i += 3) {
@@ -393,16 +393,30 @@ export class BoundingSphere {
 
   /**
    * Determines whether this sphere contains the specified point.
+   * @param p an array[3] containing x, y, z coordinates.
+   * @returns true, if this sphere contains the point; false, otherwise.
+   */
+  contains(p: number[]): boolean;
+
+  /**
+   * Determines whether this sphere contains the specified point.
    * @param p the point.
    * @returns true, if this sphere contains the point; false, otherwise.
    */
-  contains(p: Point3): boolean {
-    if (this.isEmpty) { return false; }
-    if (this.isInfinite) { return true; }
-    const dx = this._x - p.x,
-      dy = this._y - p.y,
-      dz = this._z - p.z,
-      rs = this._r * this._r;
-    return dx * dx + dy * dy + dz * dz <= rs;
+  contains(p: Point3): boolean;
+
+  contains(p: Point3 | number[]): boolean {
+    if (p instanceof Point3) {
+      if (this.isEmpty) { return false; }
+      if (this.isInfinite) { return true; }
+      const dx = this._x - p.x,
+        dy = this._y - p.y,
+        dz = this._z - p.z,
+        rs = this._r * this._r;
+      return dx * dx + dy * dy + dz * dz <= rs;
+    } else {
+      Check.argument((p as number[]).length === 3, 'array length must be 3');
+      return this.contains(new Point3(p[0], p[1], p[2]));
+    }
   }
 }

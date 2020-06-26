@@ -943,6 +943,15 @@ export function binarySearch(a: number[], x: number, i?: number): number {
   return -( low + 1 );
 }
 
+/**
+ * Returns the integer value of a number.
+ * @param value a value.
+ * @returns the value as an integer.
+ */
+export function int(value: number): number {
+  return Math.floor(value);
+}
+
 /** @internal */
 function med3(a: number[], i: number, j: number, k: number): number {
   return a[i] < a[j] ?

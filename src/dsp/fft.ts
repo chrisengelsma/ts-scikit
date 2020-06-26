@@ -1,7 +1,7 @@
 import { FftReal } from './fft-real';
 import { FftComplex } from './fft-complex';
 import { Sampling } from './sampling';
-import { arrayDimensions, ccopy, Check, copy } from '../utils';
+import { arrayDimensions, ccopy, Check, copy, int } from '../utils';
 
 /**
  * An easy-to-use fast Fourier transform.
@@ -251,7 +251,8 @@ export class Fft {
       }
     }
 
-    if (complex) { this.complex = complex };
+    if (complex) { this.complex = complex; }
+    ;
   }
 
   /**
@@ -441,7 +442,7 @@ export class Fft {
    * @param sign the sign, -1 or 1.
    */
   set sign1(sign: number) {
-    this._sign1 = (sign > 0) ? 1 : -1;
+    this._sign1 = ( sign > 0 ) ? 1 : -1;
   }
 
   /**
@@ -452,7 +453,7 @@ export class Fft {
    * @param sign the sign, -1 or 1.
    */
   set sign2(sign: number) {
-    this._sign2 = (sign > 0) ? 1 : -1;
+    this._sign2 = ( sign > 0 ) ? 1 : -1;
   }
 
   /**
@@ -463,7 +464,7 @@ export class Fft {
    * @param sign the sign, -1 or 1.
    */
   set sign3(sign: number) {
-    this._sign3 = (sign > 0) ? 1 : -1;
+    this._sign3 = ( sign > 0 ) ? 1 : -1;
   }
 
   /**
@@ -654,6 +655,10 @@ export class Fft {
 
   /** @internal */
   private _cswap(f: number[] | number[][] | number[][][], n: number, i: number, j: number, dim: number): void {
+    n = int(n);
+    i = int(i);
+    j = int(j);
+
     switch (dim) {
       case 1:
         this._doCswap1(f as number[], n, i, j);
@@ -721,6 +726,9 @@ export class Fft {
 
   /** @internal */
   private _crotateLeft(f: number[] | number[][] | number[][][], n: number, j: number, dim: number): void {
+    n = int(n);
+    j = int(j);
+
     switch (dim) {
       case 1:
         this._doCrotateLeft1(f as number[], n, j);
@@ -779,6 +787,9 @@ export class Fft {
 
   /** @internal */
   private _crotateRight(f: number[] | number[][] | number[][][], n: number, j: number, dim: number): void {
+    n = int(n);
+    j = int(j);
+
     switch (dim) {
       case 1:
         this._doCrotateRight1(f as number[], n, j);
@@ -829,6 +840,8 @@ export class Fft {
 
   /** @internal */
   private _creflect(f: number[] | number[][] | number[][][], n: number, i: number, dim: number): void {
+    n = int(n);
+    i = int(n);
 
     switch (dim) {
       case 1:

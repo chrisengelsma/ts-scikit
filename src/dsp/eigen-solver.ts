@@ -8,14 +8,105 @@ import { Check } from '../utils';
 export class EigenSolver {
 
   /**
+   * Computes eigenvalues and eigenvectors for a symmetric 2x2 matrix A.
+   * If the eigenvectors are placed in columns in a matrix V, and the
+   * eigenvalues are placed in corresponding columns of a diagonal
+   * matrix D, then AV = VD.
+   * @param a the symmetric matrix A.
+   * @param v the array of eigenvectors v[0] and v[1].
+   * @param d the array of eigenvalues d[0] and d[1].
+   */
+  static SolveSymmetric2x2(a: number[][], v: number[][], d: number[]): void {
+
+    // Copy matrix to local variables.
+    let a00: number = a[0][0];
+    const a01: number = a[0][1];
+    let a11: number = a[1][1];
+
+    // Initial eigenvectors.
+    let v00 = 1.0;
+    let v01 = 0.0;
+    let v10 = 0.0;
+    let v11 = 1.0;
+
+    // If off-diagonal element is non-zero, zero it with a Jacobi rotation.
+    if (a01 !== 0.0) {
+      const tiny = 0.1 * Math.sqrt(Number.EPSILON);
+      let c, r, s, t, u, vpr, vqr;
+      u = a11 - a00;
+      if (Math.abs(a01) < tiny * Math.abs(u)) {
+        t = a01 / u;
+      } else {
+        r = 0.5 * u / a01;
+        t = ( r >= 0.0 )
+          ? 1.0 / ( r + Math.sqrt(1.0 + r * r) )
+          : 1.0 / ( r - Math.sqrt(1.0 + r * r) );
+      }
+
+      c = 1.0 / Math.sqrt(1.0 + t * t);
+      s = t * c;
+      u = s / ( 1.0 + c );
+      r = t * a01;
+      a00 -= r;
+      a11 += r;
+
+      vpr = v00;
+      vqr = v10;
+      v00 = vpr - s * ( vqr + vpr * u );
+      v10 = vqr + s * ( vpr - vqr * u );
+      vpr = v01;
+      vqr = v11;
+      v01 = vpr - s * ( vqr + vpr * u );
+      v11 = vqr + s * ( vpr - vqr * u );
+    }
+
+    // Copy eigenvalues an eigenvectors to output arrays.
+    d[0] = a00;
+    d[1] = a11;
+    v[0][0] = v00;
+    v[0][1] = v01;
+    v[1][0] = v10;
+    v[1][1] = v11;
+
+
+    // Sort eigenvalues (and eigenvectors) in descending order.
+    if (d[0] < d[1]) {
+      const dt: number = d[1];
+      d[1] = d[0];
+      d[0] = dt;
+      const vt: number[] = v[1];
+      v[1] = v[0];
+      v[0] = vt;
+    }
+  }
+
+  /**
+   * Computes eigenvalues and eigenvectors for a symmetric 3x3 matrix A.
+   * If the eigenvectors are placed in columns in a matrix V, and the
+   * eigenvalues are placed in corresponding columns of a diagonal
+   * matrix D, then AV = VD.
+   * @param a the symmetric matrix A.
+   * @param v the array of eigenvectors v[0], v[1], and v[2].
+   * @param d the array of eigenvalues d[0], d[1] and d[2].
+   * @param useJacobi true, if using the slower (but more accurate) iterative Jacobi solver. Default is false.
+   */
+  static SolveSymmetric3x3(a: number[][], v: number[][], d: number[], useJacobi: boolean = false): void {
+    if (useJacobi) {
+      EigenSolver._SolveSymmetric3x3Jacobi(a, v, d);
+    } else {
+      EigenSolver._SolveSymmetric3x3Hybrid(a, v, d);
+    }
+  }
+
+  /**
    * Iterative Jacobi solver. Slower, but more accurate.
    * @private
    */
   private static _SolveSymmetric3x3Jacobi(a: number[][], v: number[][], d: number[]): void {
     // Copy matrix to local variables.
     let a00 = a[0][0],
-        a01 = a[0][1], a11 = a[1][1],
-        a02 = a[0][2], a12 = a[1][2], a22 = a[2][2];
+      a01 = a[0][1], a11 = a[1][1],
+      a02 = a[0][2], a12 = a[1][2], a22 = a[2][2];
 
     // Initial eigenvectors.
     let v00 = 1.0, v01 = 0.0, v02 = 0.0,
@@ -389,8 +480,8 @@ export class EigenSolver {
    */
   private static _ReduceSymmetric3x3(a: number[][], v: number[][], d: number[], e: number[]): void {
     const a00 = a[0][0],
-          a01 = a[0][1], a11 = a[1][1],
-          a02 = a[0][2], a12 = a[1][2], a22 = a[2][2];
+      a01 = a[0][1], a11 = a[1][1],
+      a02 = a[0][2], a12 = a[1][2], a22 = a[2][2];
     let v11 = 1.0;
     let v12 = 0.0;
     let v21 = 0.0;
@@ -445,96 +536,5 @@ export class EigenSolver {
     v[2][0] = 0.0;
     v[2][1] = v21;
     v[2][2] = v22;
-  }
-
-  /**
-   * Computes eigenvalues and eigenvectors for a symmetric 2x2 matrix A.
-   * If the eigenvectors are placed in columns in a matrix V, and the
-   * eigenvalues are placed in corresponding columns of a diagonal
-   * matrix D, then AV = VD.
-   * @param a the symmetric matrix A.
-   * @param v the array of eigenvectors v[0] and v[1].
-   * @param d the array of eigenvalues d[0] and d[1].
-   */
-  static SolveSymmetric2x2(a: number[][], v: number[][], d: number[]): void {
-
-    // Copy matrix to local variables.
-    let a00: number = a[0][0];
-    const a01: number = a[0][1];
-    let a11: number = a[1][1];
-
-    // Initial eigenvectors.
-    let v00 = 1.0;
-    let v01 = 0.0;
-    let v10 = 0.0;
-    let v11 = 1.0;
-
-    // If off-diagonal element is non-zero, zero it with a Jacobi rotation.
-    if (a01 !== 0.0) {
-      const tiny = 0.1 * Math.sqrt(Number.EPSILON);
-      let c, r, s, t, u, vpr, vqr;
-      u = a11 - a00;
-      if (Math.abs(a01) < tiny * Math.abs(u)) {
-        t = a01 / u;
-      } else {
-        r = 0.5 * u / a01;
-        t = ( r >= 0.0 )
-          ? 1.0 / ( r + Math.sqrt(1.0 + r * r) )
-          : 1.0 / ( r - Math.sqrt(1.0 + r * r) );
-      }
-
-      c = 1.0 / Math.sqrt(1.0 + t * t);
-      s = t * c;
-      u = s / ( 1.0 + c );
-      r = t * a01;
-      a00 -= r;
-      a11 += r;
-
-      vpr = v00;
-      vqr = v10;
-      v00 = vpr - s * ( vqr + vpr * u );
-      v10 = vqr + s * ( vpr - vqr * u );
-      vpr = v01;
-      vqr = v11;
-      v01 = vpr - s * ( vqr + vpr * u );
-      v11 = vqr + s * ( vpr - vqr * u );
-    }
-
-    // Copy eigenvalues an eigenvectors to output arrays.
-    d[0] = a00;
-    d[1] = a11;
-    v[0][0] = v00;
-    v[0][1] = v01;
-    v[1][0] = v10;
-    v[1][1] = v11;
-
-
-    // Sort eigenvalues (and eigenvectors) in descending order.
-    if (d[0] < d[1]) {
-      const dt: number = d[1];
-      d[1] = d[0];
-      d[0] = dt;
-      const vt: number[] = v[1];
-      v[1] = v[0];
-      v[0] = vt;
-    }
-  }
-
-  /**
-   * Computes eigenvalues and eigenvectors for a symmetric 3x3 matrix A.
-   * If the eigenvectors are placed in columns in a matrix V, and the
-   * eigenvalues are placed in corresponding columns of a diagonal
-   * matrix D, then AV = VD.
-   * @param a the symmetric matrix A.
-   * @param v the array of eigenvectors v[0], v[1], and v[2].
-   * @param d the array of eigenvalues d[0], d[1] and d[2].
-   * @param useJacobi true, if using the slower (but more accurate) iterative Jacobi solver. Default is false.
-   */
-  static SolveSymmetric3x3(a: number[][], v: number[][], d: number[], useJacobi: boolean = false): void {
-    if (useJacobi) {
-      EigenSolver._SolveSymmetric3x3Jacobi(a, v, d);
-    } else {
-      EigenSolver._SolveSymmetric3x3Hybrid(a, v, d);
-    }
   }
 }
