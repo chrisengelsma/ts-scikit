@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Matrix44 } from '../../src/sgl';
+import { Matrix44 } from '../../src/math';
 
 const randomArray = (): number[] => {
   // @ts-ignore

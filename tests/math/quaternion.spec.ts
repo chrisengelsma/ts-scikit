@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Matrix44, Quaternion, Vector3 } from '../../src/sgl';
+import { Matrix44, Quaternion, Vector3 } from '../../src/math';
 
 describe('Quaternion', () => {
 
@@ -120,7 +120,7 @@ describe('Quaternion', () => {
   });
 
   it('should rotate a vector', () => {
-    const val = Math.sqrt(2.0)/2.0;
+    const val = Math.sqrt(2.0) / 2.0;
     const q = new Quaternion(0, val, 0, val);
     const vec = new Vector3(1, 0, 0);
 
@@ -181,4 +181,169 @@ describe('Quaternion', () => {
     expect(m.m[15]).to.equal(0.0);
   });
 
+  it('should compute length', () => {
+    const q: Quaternion = new Quaternion(5, 10, 4, 2);
+
+    expect(q.lengthSquared).to.equal(145);
+    expect(q.length).to.be.closeTo(12.0415945, 0.0000001);
+
+  });
+
+  it('should add quaternions', () => {
+    const q1: Quaternion = new Quaternion(1, 2, 3, 4);
+    const q2: Quaternion = new Quaternion(5, 6, 7, 8);
+
+    let q3 = q1.plus(q2);
+
+    expect(q1.x).to.equal(1);
+    expect(q1.y).to.equal(2);
+    expect(q1.z).to.equal(3);
+    expect(q1.w).to.equal(4);
+
+    expect(q2.x).to.equal(5);
+    expect(q2.y).to.equal(6);
+    expect(q2.z).to.equal(7);
+    expect(q2.w).to.equal(8);
+
+    expect(q3.x).to.equal(6);
+    expect(q3.y).to.equal(8);
+    expect(q3.z).to.equal(10);
+    expect(q3.w).to.equal(12);
+
+    q3 = q1.plusEquals(q2);
+
+    expect(q1.x).to.equal(6);
+    expect(q1.y).to.equal(8);
+    expect(q1.z).to.equal(10);
+    expect(q1.w).to.equal(12);
+
+    expect(q2.x).to.equal(5);
+    expect(q2.y).to.equal(6);
+    expect(q2.z).to.equal(7);
+    expect(q2.w).to.equal(8);
+
+    expect(q3.x).to.equal(6);
+    expect(q3.y).to.equal(8);
+    expect(q3.z).to.equal(10);
+    expect(q3.w).to.equal(12);
+  });
+
+  it('should subtract quaternions', () => {
+    const q1: Quaternion = new Quaternion(5, 6, 7, 8);
+    const q2: Quaternion = new Quaternion(1, 2, 3, 4);
+
+    let q3 = q1.minus(q2);
+
+    expect(q1.x).to.equal(5);
+    expect(q1.y).to.equal(6);
+    expect(q1.z).to.equal(7);
+    expect(q1.w).to.equal(8);
+
+    expect(q2.x).to.equal(1);
+    expect(q2.y).to.equal(2);
+    expect(q2.z).to.equal(3);
+    expect(q2.w).to.equal(4);
+
+    expect(q3.x).to.equal(4);
+    expect(q3.y).to.equal(4);
+    expect(q3.z).to.equal(4);
+    expect(q3.w).to.equal(4);
+
+    q3 = q1.minusEquals(q2);
+
+    expect(q1.x).to.equal(4);
+    expect(q1.y).to.equal(4);
+    expect(q1.z).to.equal(4);
+    expect(q1.w).to.equal(4);
+
+    expect(q2.x).to.equal(1);
+    expect(q2.y).to.equal(2);
+    expect(q2.z).to.equal(3);
+    expect(q2.w).to.equal(4);
+
+    expect(q3.x).to.equal(4);
+    expect(q3.y).to.equal(4);
+    expect(q3.z).to.equal(4);
+    expect(q3.w).to.equal(4);
+  });
+
+  it('should multiply by scalar value', () => {
+    const q1: Quaternion = new Quaternion(1, 2, 3, 4);
+
+    let q2: Quaternion = q1.times(5.0);
+
+    expect(q1.x).to.equal(1);
+    expect(q1.y).to.equal(2);
+    expect(q1.z).to.equal(3);
+    expect(q1.w).to.equal(4);
+
+    expect(q2.x).to.equal(5);
+    expect(q2.y).to.equal(10);
+    expect(q2.z).to.equal(15);
+    expect(q2.w).to.equal(20);
+  });
+
+  it('should normalize', () => {
+    const q1: Quaternion = new Quaternion(1, 2, 3, 4);
+
+    const q2 = q1.normalize();
+
+    expect(q1.x).to.equal(1);
+    expect(q1.y).to.equal(2);
+    expect(q1.z).to.equal(3);
+    expect(q1.w).to.equal(4);
+
+    expect(q2.x).to.be.closeTo(0.1825742, 0.000001);
+    expect(q2.y).to.be.closeTo(0.3651484, 0.000001);
+    expect(q2.z).to.be.closeTo(0.5477226, 0.000001);
+    expect(q2.w).to.be.closeTo(0.7302967, 0.000001);
+
+    const q3 = q1.normalizeEquals();
+
+    expect(q1.x).to.be.closeTo(0.1825742, 0.000001);
+    expect(q1.y).to.be.closeTo(0.3651484, 0.000001);
+    expect(q1.z).to.be.closeTo(0.5477226, 0.000001);
+    expect(q1.w).to.be.closeTo(0.7302967, 0.000001);
+
+    expect(q3.x).to.equal(q1.x);
+    expect(q3.y).to.equal(q1.y);
+    expect(q3.z).to.equal(q1.z);
+    expect(q3.w).to.equal(q1.w);
+  });
+
+  it('should compute dot product', () => {
+    const q1: Quaternion = new Quaternion(1, 2, 3, 4);
+    const q2: Quaternion = new Quaternion(5, 6, 7, 8);
+
+    expect(q1.dot(q2)).to.equal(70);
+  });
+
+  it('should convert to euler vector', () => {
+    const q: Quaternion = new Quaternion(-0.365, -0.548, -0.730, -0.182);
+
+    const xe = -1.3741243095144036;
+    const ye = 0.8217990559893817;
+    const ze = -2.9426992700524446;
+    const eps = 0.000001;
+
+    const v1 = q.toEuler('XYZ');
+    const v2 = q.toEuler('YZX');
+    const v3 = q.toEuler('ZYX');
+
+    expect(v1.x).to.be.closeTo(xe, eps);
+    expect(v1.y).to.be.closeTo(ye, eps);
+    expect(v1.z).to.be.closeTo(ze, eps);
+
+    expect(v2.x).to.be.closeTo(ye, eps);
+    expect(v2.y).to.be.closeTo(ze, eps);
+    expect(v2.z).to.be.closeTo(xe, eps);
+
+    expect(v3.x).to.be.closeTo(ze, eps);
+    expect(v3.y).to.be.closeTo(ye, eps);
+    expect(v3.z).to.be.closeTo(xe, eps);
+  });
+
+  it('should compute spherical linear interpolation', () => {
+
+  });
 });

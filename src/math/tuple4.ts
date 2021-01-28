@@ -48,6 +48,6 @@ export class Tuple4 {
    * @returns true, if equals; false, otherwise.
    */
   public equals(o: Tuple4): boolean {
-    return (this.x === o.x && this.y === o.y && this.z === o.z && this.w === o.w);
+    return ( this.x === o.x && this.y === o.y && this.z === o.z && this.w === o.w );
   }
 }

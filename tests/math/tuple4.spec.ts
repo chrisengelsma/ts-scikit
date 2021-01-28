@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { Tuple4 } from '../../src/sgl';
+import { Tuple4 } from '../../src/math';
 
 describe('Tuple4', () => {
   it('should construct values', () => {

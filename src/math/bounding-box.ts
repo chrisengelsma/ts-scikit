@@ -1,6 +1,5 @@
 import { Point3 } from './point3';
 import { Check } from '../utils';
-import { BoundingSphere } from './bounding-sphere';
 
 export class BoundingBox {
 
@@ -138,11 +137,9 @@ export class BoundingBox {
    * Expands this box to include the specified features.
    * @param p the features to include in this box.
    */
-  expandBy(p: BoundingBox | BoundingSphere | Point3 | Point3[] | number[]): void {
+  expandBy(p: BoundingBox | Point3 | Point3[] | number[]): void {
     if (p instanceof Point3) {
       this.expandByPoint(p);
-    } else if (p instanceof BoundingSphere) {
-      this.expandByBoundingSphere(p as BoundingSphere);
     } else if (p instanceof BoundingBox) {
       this.expandByPoint(new Point3(p.xmin, p.ymin, p.zmin));
       this.expandByPoint(new Point3(p.xmax, p.ymax, p.zmax));
@@ -200,30 +197,6 @@ export class BoundingBox {
     if (this._xmax < p.x) this._xmax = p.x;
     if (this._ymax < p.y) this._ymax = p.y;
     if (this._zmax < p.z) this._zmax = p.z;
-  }
-
-  /**
-   * Expands this box by the specified bounding sphere.
-   * @param bs the bounding sphere.
-   */
-  expandByBoundingSphere(bs: BoundingSphere): void {
-    if (!bs.isInfinite) {
-      if (!bs.isEmpty) {
-        const r = bs.radius;
-        const c = bs.center;
-        const x = c.x;
-        const y = c.y;
-        const z = c.z;
-        if (this._xmin > x - r) { this._xmin = x - r; }
-        if (this._ymin > y - r) { this._xmin = y - r; }
-        if (this._zmin > z - r) { this._xmin = z - r; }
-        if (this._xmax < x + r) { this._xmax = x + r; }
-        if (this._ymax < y + r) { this._xmax = y + r; }
-        if (this._zmax < z + r) { this._xmax = z + r; }
-      }
-    } else {
-      this.setInfinite();
-    }
   }
 
   /**
